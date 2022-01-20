@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Pellet
+  - Energizer
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Player
+  - Ghosts
+  - Walls
+  - Nodes
+  - Pellets
+  - Energizers
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Walls
+    uniqueID: 2948506891
+    locked: 0
+  - name: Pellet
+    uniqueID: 104816627
+    locked: 0
+  - name: Player
+    uniqueID: 2097354743
+    locked: 0
+  - name: Ghost
+    uniqueID: 489404119
+    locked: 0
