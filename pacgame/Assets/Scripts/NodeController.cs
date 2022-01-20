@@ -79,9 +79,13 @@ public class NodeController : MonoBehaviour
         if (pellet)
         {
             GameObject child = transform.GetChild(0).gameObject;
-            if (child.layer == 11) // if energizer
+            if (child.tag == "Energizer") // if energizer
             {
                 energizer = true;
+            }
+            else
+            {
+                energizer = false; // current issue: energizer is always set to true for all pellets?
             }
         }
         

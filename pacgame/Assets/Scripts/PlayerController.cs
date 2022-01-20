@@ -37,4 +37,9 @@ public class PlayerController : MonoBehaviour
 
         moveController.nextDirection = this.nextDirection;
     }
+
+    public GameObject GetPlayerNextNode()
+    {
+        return moveController.nextNode;
+    }
 }

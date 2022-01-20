@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &374244281 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4580105729072427393, guid: e157d505076a2e9459548b1cceabd592, type: 3}
+  m_PrefabInstance: {fileID: 997568637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +277,10 @@ PrefabInstance:
     - target: {fileID: 2275161315347275538, guid: 54bd392a579d09e4d91e2624cf5a21ae, type: 3}
       propertyPath: m_SortingLayer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275161315347275538, guid: 54bd392a579d09e4d91e2624cf5a21ae, type: 3}
+      propertyPath: m_SortingOrder
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2275161315347275538, guid: 54bd392a579d09e4d91e2624cf5a21ae, type: 3}
       propertyPath: m_SortingLayerID
@@ -2721,6 +2730,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5998680476528214333, guid: e157d505076a2e9459548b1cceabd592, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5998680476528214333, guid: e157d505076a2e9459548b1cceabd592, type: 3}
       propertyPath: m_SortingLayerID
       value: 104816627
       objectReference: {fileID: 0}
@@ -2743,7 +2756,7 @@ GameObject:
   - component: {fileID: 1570226024}
   - component: {fileID: 1570226025}
   - component: {fileID: 1570226026}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: RedGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2758,7 +2771,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570226022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6, y: -4, z: 0}
+  m_LocalPosition: {x: -12.5, y: 12.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2803,7 +2816,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 489404119
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3cc683a9847a2234fa3a3188cece3df1, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -2827,6 +2840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532f718794b83b1468819244567472ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextDirection: 
 --- !u!114 &1570226026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2839,7 +2853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f95734f2db62143a3898bc58cac10a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextNode: {fileID: 0}
+  nextNode: {fileID: 374244281}
   speed: 8
   currDirection: 
   nextDirection: 
@@ -2858,8 +2872,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1644781374}
   - component: {fileID: 1644781373}
-  - component: {fileID: 1644781376}
-  - component: {fileID: 1644781375}
   m_Layer: 0
   m_Name: PinkGhost
   m_TagString: Untagged
@@ -2932,34 +2944,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1644781375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1644781372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48f95734f2db62143a3898bc58cac10a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextNode: {fileID: 0}
-  speed: 8
-  currDirection: 
-  nextDirection: 
---- !u!114 &1644781376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1644781372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 532f718794b83b1468819244567472ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1684315640
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,8 +2954,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1684315642}
   - component: {fileID: 1684315641}
-  - component: {fileID: 1684315644}
-  - component: {fileID: 1684315643}
   m_Layer: 0
   m_Name: OrangeGhost
   m_TagString: Untagged
@@ -3018,7 +3000,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 489404119
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3cc683a9847a2234fa3a3188cece3df1, type: 3}
   m_Color: {r: 1, g: 0.4156863, b: 0, a: 1}
   m_FlipX: 0
@@ -3044,34 +3026,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1684315643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684315640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48f95734f2db62143a3898bc58cac10a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextNode: {fileID: 0}
-  speed: 8
-  currDirection: 
-  nextDirection: 
---- !u!114 &1684315644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684315640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 532f718794b83b1468819244567472ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1800240791
 GameObject:
   m_ObjectHideFlags: 0
@@ -3082,8 +3036,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1800240792}
   - component: {fileID: 1800240793}
-  - component: {fileID: 1800240795}
-  - component: {fileID: 1800240794}
   m_Layer: 10
   m_Name: BlueGhost
   m_TagString: Untagged
@@ -3144,7 +3096,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 489404119
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3cc683a9847a2234fa3a3188cece3df1, type: 3}
   m_Color: {r: 0, g: 0.5803922, b: 1, a: 1}
   m_FlipX: 0
@@ -3156,34 +3108,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1800240794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1800240791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48f95734f2db62143a3898bc58cac10a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextNode: {fileID: 0}
-  speed: 8
-  currDirection: 
-  nextDirection: 
---- !u!114 &1800240795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1800240791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 532f718794b83b1468819244567472ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2030652751
 GameObject:
   m_ObjectHideFlags: 0

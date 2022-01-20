@@ -28,7 +28,7 @@ public class MovementController : MonoBehaviour
     {
         nodeController = nextNode.GetComponent<NodeController>();
 
-        if (nodeController.pellet)
+        if (nodeController.pellet && gameObject.tag == "Player")
         {
             nodeController.pellet = false;
             GameObject child = nextNode.transform.GetChild(0).gameObject;
