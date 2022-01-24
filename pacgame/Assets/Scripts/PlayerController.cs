@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
             nextDirection = "right";
         }
 
-        moveController.nextDirection = this.nextDirection;
+        moveController.SetDirection(this.nextDirection);
     }
 
     public GameObject GetPlayerNextNode()

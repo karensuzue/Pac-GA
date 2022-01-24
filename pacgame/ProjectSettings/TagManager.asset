@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Pellet
   - Energizer
+  - GhostNode
   layers:
   - Default
   - TransparentFX

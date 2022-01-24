@@ -6,12 +6,15 @@ public class MovementController : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject nextNode; // given in inspector
-    public float speed = 8.0f; // switch to private later
+    public float speed; // switch to private later
 
     public string currDirection = ""; // switch to private after done with debuggin
     public string nextDirection = "";
 
+    public bool isGhost = false;
+
     private NodeController nodeController;
+
     void Start()
     {
 
@@ -69,6 +72,11 @@ public class MovementController : MonoBehaviour
             
            
         }
+    }
+
+    public void SetDirection(string direction)
+    {
+        nextDirection = direction;
     }
 
 }
