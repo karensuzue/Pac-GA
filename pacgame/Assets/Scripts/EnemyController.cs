@@ -101,20 +101,73 @@ public class EnemyController : MonoBehaviour
         }*/
         if (ghostNodePositions == GhostNodePositions.moveToPath)
         {
-            if (ghostColor == GhostColor.red) {
+            if (ghostColor == GhostColor.red) 
+            {
                 Vector2 target = player.transform.position;
                 string nextDirection = GetClosestDirection(target);
                 movementController.SetDirection(nextDirection);
             }
             
-            //if (ghostColor == GhostColor.blue) {
-                // Vector2 target = 
-            //}
+            else if (ghostColor == GhostColor.blue) 
+            {
+                string targetDirection = player.GetComponent<MovementController>().currDirection;
+                Vector2 targetPosition = player.transform.position;   
+                if (targetDirection == "left")
+                {
+                    targetPosition.x -= 2;
+                }
 
-            if (ghostColor == GhostColor.pink) {
+                if (targetDirection == "right")
+                {
+                    targetPosition.x += 2;
+                }
 
-                Vector2 target = player.GetComponent<MovementController>().nextNode.transform.position * 4;
-                string nextDirection = GetClosestDirection(target);
+                if (targetDirection == "up")
+                {
+                    targetPosition.y += 2;
+                }
+
+                if (targetDirection == "down")
+                {
+                    targetPosition.y -= 2;
+                }
+
+                GameObject redGhost = GameObject.FindGameObjectWithTag("RedGhost");
+                float xDistance = targetPosition.x - redGhost.transform.position.x;
+                float yDistance = targetPosition.y - redGhost.transform.position.y;
+
+                Vector2 blueTarget = new Vector2(targetPosition.x + xDistance, targetPosition.y + yDistance);
+                string nextDirection = GetClosestDirection(blueTarget);
+                movementController.SetDirection(nextDirection);
+            }
+
+            else if (ghostColor == GhostColor.pink) 
+            {
+
+                string targetDirection = player.GetComponent<MovementController>().currDirection;
+                Vector2 targetPosition = player.transform.position;
+
+                if (targetDirection == "left") 
+                {
+                    targetPosition.x -= 2;
+                }
+
+                else if (targetDirection == "right")
+                {
+                    targetPosition.x += 2;
+                }
+
+                else if (targetDirection == "up")
+                {
+                    targetPosition.y += 2;
+                }
+
+                else if (targetDirection == "down")
+                {
+                    targetPosition.y -= 2;
+                }
+
+                string nextDirection = GetClosestDirection(targetPosition);
                 movementController.SetDirection(nextDirection);
             }
         }   

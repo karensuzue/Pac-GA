@@ -6,6 +6,8 @@ public class MovementController : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject nextNode; // given in inspector
+    // private GameObject teleportR;
+    // private GameObject teleportL;
     public float speed; // switch to private later
 
     public string currDirection = ""; // switch to private after done with debuggin
@@ -17,7 +19,8 @@ public class MovementController : MonoBehaviour
 
     void Start()
     {
-
+        // teleportL = GameObject.FindGameObjectWithTag("TeleportL");
+        // teleportR = GameObject.FindGameObjectWithTag("TeleportR");
     }
 
     // Update is called once per frame
@@ -58,7 +61,7 @@ public class MovementController : MonoBehaviour
             {
                 nextNode = tempNode;
                 currDirection = nextDirection;
-            }
+            }            
 
             /*else if (tempNode == null && currDirection != "")
             {

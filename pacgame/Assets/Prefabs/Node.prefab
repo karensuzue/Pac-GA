@@ -184,6 +184,8 @@ MonoBehaviour:
   right: 0
   up: 0
   down: 0
+  pellet: 1
+  energizer: 0
   nodeLeft: {fileID: 0}
   nodeRight: {fileID: 0}
   nodeUp: {fileID: 0}
