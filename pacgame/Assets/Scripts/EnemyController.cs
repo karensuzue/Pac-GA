@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -143,7 +144,6 @@ public class EnemyController : MonoBehaviour
 
             else if (ghostColor == GhostColor.pink) 
             {
-
                 string targetDirection = player.GetComponent<MovementController>().currDirection;
                 Vector2 targetPosition = player.transform.position;
 
@@ -169,6 +169,24 @@ public class EnemyController : MonoBehaviour
 
                 string nextDirection = GetClosestDirection(targetPosition);
                 movementController.SetDirection(nextDirection);
+            }
+
+            else if (ghostColor == GhostColor.orange)
+            {
+                float distance = Math.Abs(Vector2.Distance(player.transform.position, transform.position));
+                if (distance < 8)
+                {
+                    Vector2 target = player.transform.position;
+                    string nextDirection = GetClosestDirection(target);
+                    movementController.SetDirection(nextDirection);
+                }
+
+                else
+                {
+                    GameObject target = GameObject.FindGameObjectWithTag("OrangeScatter");
+                    string nextDirection = GetClosestDirection(target.transform.position);
+                    movementController.SetDirection(nextDirection);
+                }
             }
         }   
 

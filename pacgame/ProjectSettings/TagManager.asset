@@ -7,9 +7,8 @@ TagManager:
   - Pellet
   - Energizer
   - GhostNode
-  - TeleportR
-  - TeleportL
   - RedGhost
+  - OrangeScatter
   layers:
   - Default
   - TransparentFX
