@@ -53,8 +53,13 @@ public class EnemyController : MonoBehaviour
     private GameObject player;
     private MovementController movementController;
 
+    public bool playerCaught;
+    public GameObject gameManagerObj;
+    public GameManager gameManager;
+
     void Awake() 
     {
+        gameManager = gameManagerObj.GetComponent<GameManager>();
         player = GameObject.FindGameObjectWithTag("Player"); // change this to the one in level controller
         movementController = gameObject.GetComponent<MovementController>();
         movementController.isGhost = true;
@@ -91,11 +96,18 @@ public class EnemyController : MonoBehaviour
         movementController.nextNode = startingNode;
         leaveHome = true; // maybe control this from level controller later, or ask if ui is at respwan state
         // movementController.nextDirection = "right";
+        playerCaught = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*if (transform.position == player.transform.position)
+        {
+            playerCaught = true; 
+            gameManager.state = GameManager.GameStates.gameOver;
+        }*/
+
         /*if (movementController.nextNode == player.GetComponent<PlayerController>().GetPlayerNextNode())
         {
             current_mode = 3; // win, trigger UI
@@ -221,7 +233,6 @@ public class EnemyController : MonoBehaviour
                     ghostNodePositions = GhostNodePositions.moveToPath;
                     // movementController.nextDirection = "right"; // temp, change to GetPlayerDirection? 
                 }
-
             }
         }
     }
@@ -286,5 +297,14 @@ public class EnemyController : MonoBehaviour
         }
 
         return nextDirection;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Player")
+        {
+            playerCaught = true; 
+            gameManager.state = GameManager.GameStates.gameOver;
+        }
     }
 };

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,15 +10,15 @@ public class GameManager : MonoBehaviour
     public int pelletScore = 1;
     public int energizerScore = 10;
     public int currentScore; // total score would be 269 + 40 (4 energizers)
-    private int ghostTotal = 4;
-
+    //private int ghostTotal = 4;
     // private int lives = 3;
-
     // private GameObject[] pellets;
     public int pelletCount;
-
     // private GameObject[] energizers;
     public int energizerCount;
+
+    public GameObject ghosts; // given in inspector
+    public GameObject player;
 
     public enum GameStates
     {
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // CheckPlayerCaught();
         currentScore = UpdateScore();
 
         pelletCount = GetPelletCount();
@@ -56,12 +58,11 @@ public class GameManager : MonoBehaviour
             state = GameStates.win;
         }
 
-        /*if (GhostCollidePlayer())
-        {
-            state = GameStates.gameOver;
-        }*/
+        // if (state == GameStates.inGame)
+        // {
+            // start timer
+        // }
 
-        
     }
 
     public int GetPelletCount()
@@ -89,4 +90,27 @@ public class GameManager : MonoBehaviour
         int score = currentScore + pDifference + (eDifference * 10);
         return score;
     }
+
+    /*public void CheckPlayerCaught()
+    {
+
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject ghost = ghosts.transform.GetChild(i).gameObject;
+            if (ghost.layer == 7)
+            {
+                if (ghost.GetComponent<EnemyController>().playerCaught)
+                {
+                    state = GameStates.gameOver;
+                }
+            }
+        }
+    }*/
+
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene("PACGAME");
+    }
+
 }
