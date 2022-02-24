@@ -12,8 +12,8 @@ public class HUDController : MonoBehaviour
     public GameObject endPopup;
 
     public int currentScore;
-    public float startTime;
-    public float endTime;
+    // public float startTime;
+    // public float endTime;
 
     public GameObject gameManagerObj;
     public GameManager gameManager;
@@ -31,7 +31,7 @@ public class HUDController : MonoBehaviour
 
     void Start()
     {
-        startTime = Time.time;
+        // startTime = Time.time;
     }
 
 
@@ -41,7 +41,7 @@ public class HUDController : MonoBehaviour
         currentScore = gameManager.currentScore;
         scoreText.text = "Score: " + currentScore.ToString();
 
-        float t = Time.time - startTime;
+        // float t = Time.time - startTime;
 
         state = gameManager.state;
         if (state == GameManager.GameStates.win)
@@ -59,8 +59,8 @@ public class HUDController : MonoBehaviour
         }
         else 
         {
-            endTime = t;
-            timerText.text = "Time: " + endTime.ToString();
+            // endTime = t;
+            timerText.text = "Time: " + gameManager.endTime.ToString();
         }
     }
 

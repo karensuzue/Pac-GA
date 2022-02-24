@@ -46,10 +46,10 @@ public class MovementController : MonoBehaviour
             }
 
             GameObject[] pellets = GameObject.FindGameObjectsWithTag("Pellet");
-            Debug.Log(pellets.Length);
+            // Debug.Log(pellets.Length);
 
             GameObject[] energizers = GameObject.FindGameObjectsWithTag("Energizer");
-            Debug.Log(energizers.Length);
+            // Debug.Log(energizers.Length);
         }
 
         if (transform.position.x == nextNode.transform.position.x && transform.position.y == nextNode.transform.position.y)
