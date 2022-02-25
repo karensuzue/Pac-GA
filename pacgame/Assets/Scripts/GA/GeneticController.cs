@@ -20,9 +20,7 @@ public class GeneticController : MonoBehaviour
     private Genome bestGenome;
 
     private int generation; // current generation
-    private bool busy; // true if current run in progress
-
-    public GameObject gameManagerObj; // drag and drop in Inspector
+    private bool gameRunning; // true if game is currently running
     private int ghostTotal;
     private List<GameObject> generatedGhosts = new List<GameObject>();
 
@@ -31,15 +29,38 @@ public class GeneticController : MonoBehaviour
     public GameObject bluePrefab;
     public GameObject pinkPrefab;
     public GameObject orangePrefab;
-    
+
+    private enum GhostColors
+    {
+        red,
+        pink,
+        blue,
+        orange
+    }
+    private GhostColors ghostColor;
+
+    public GameObject gameManagerObj; // drag and drop in Inspector
+    public GameManager gameManager;
+
+    public GameObject ghostStart; // drag and drop in Inspector
+    private GameObject ghostStartLeft;
+    private GameObject ghostStartRight;
+    private GameObject ghostStartCenter;
+    private GameObject ghostStartStart;
 
     void Awake()
     {
         // initialization goes here
-        ghostTotal = gameManagerObj.GetComponent<GameManager>().ghostTotal;
+        gameManager = gameManagerObj.GetComponent<GameManager>();
+        ghostStartCenter = ghostStart.transform.GetChild(0).gameObject;
+        ghostStartLeft = ghostStart.transform.GetChild(1).gameObject;
+        ghostStartRight = ghostStart.transform.GetChild(2).gameObject;
+        ghostStartStart = ghostStart.transform.GetChild(3).gameObject;
+        ghostTotal = gameManager.ghostTotal;
 
     }
     void Start() {
+        /*
         // test to see if genome initialization works 
         Genome genom = new Genome(chromLength);
         for (int i = 0; i < chromLength; i++) {
@@ -51,24 +72,35 @@ public class GeneticController : MonoBehaviour
         Debug.Log(genomDecoded[0]);
         Debug.Log(genomDecoded[1]);
 
+        InstantiateGhostPrefab(genomDecoded);
+
 
         CreateStartingPopulation();
-        Debug.Log("Starting Population:");
-        for (int i = 0; i < ghostTotal; i++) {
-            Debug.Log(vecPopulation[i]);
-            Debug.Log("Genome" + i.ToString());
-            for (int j = 0; j < chromLength; i++) {
-                Debug.Log(genom.vecBits[j]);
-            }
-        }
+        Debug.Log("Test one from population");
+        for (int i = 0; i < chromLength; i++) {
+            Debug.Log(vecPopulation[0].vecBits[i]);   
+        }*/
 
+        GameObject prefab = Instantiate(redPrefab, Vector2.zero, Quaternion.identity);
+        prefab.transform.position = new Vector2((float)-0.01, (float)2.38);
+
+        
+
+        // CreateStartingPopulation();
+        // gameRunning = true;
         
     }
 
-    // Start is called before the first frame update
+   
     void FixedUpdate()
     {
-          
+        // GameManager.GameStates state = gameManager.state;
+
+        // if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
+            // gameRunning = false;
+        // }
+
+        // Epoch();  
     }
 
     // Methods needed to implement:
@@ -99,10 +131,6 @@ public class GeneticController : MonoBehaviour
 
     }
 
-    private void Epoch() {
-
-    }
-
     private void Reset() {
 
     }*/
@@ -115,7 +143,7 @@ public class GeneticController : MonoBehaviour
     }
 
     private List<int> Decode(List<int> bits) { // WORKS
-        // decodes genes, returns a list containing the ghost color and speed
+        // decodes genes, returns a list containing numbers for ghost color and speed
         // Input genome's list of bits
         // Outputs a size 2 list containing the numbers representing color + speed
         List<int> decodedGenome = new List<int>();
@@ -136,18 +164,54 @@ public class GeneticController : MonoBehaviour
         return decodedGenome;
     }
 
-    /*
-    private void InstantiateGhostPrefabs() {
-        GameObject ghostPrefab = Instantiate<GameObject>();
+    private void NumberToColorMap(List<int> decodedChrom) {
+        // maps first number of decoded chromosome to color
 
-        
+    }
 
+    private void InstantiateGhostPrefab(List<int> decodedChrom) {
+        // instantiate ghost prefab for a decode genome ([color, speed])
+        // GameObject ghostPrefab = Instantiate<GameObject>();
+        // 00 or 0 = Red, 01 or 1 = Pink, 10 or 2 = Blue, 11 or 3 = Orange
+        int color = decodedChrom[0];
+        int speed = decodedChrom[1];
+
+        GameObject prefab;
+
+        if (color == 0) { // red 
+            prefab = Instantiate(redPrefab, new Vector3((float)(-0.03400001), (float)(0.4330001), 0), Quaternion.identity);
+            generatedGhosts.Add(prefab);
+        }
+        else if (color == 1) { // pink 
+            prefab = Instantiate(pinkPrefab, new Vector3((float)(0.06), (float)(-2.67), 0), Quaternion.identity);
+            generatedGhosts.Add(prefab);
+        }
+        else if (color == 2) { // blue
+            prefab = Instantiate(bluePrefab, new Vector3((float)(-1.62), (float)(-2.66), 0), Quaternion.identity);
+            generatedGhosts.Add(prefab);
+        }
+        else if (color == 3) { // orange
+            prefab = Instantiate(orangePrefab, new Vector3((float)(1.68), (float)(-2.7), 0), Quaternion.identity);
+            generatedGhosts.Add(prefab);
+        }
     }
     
     private void DestroyGhostPrefabs() {
+        // destroys all ghost prefabs on screen
+        for (int i = 0; i < ghostTotal; i++) {
+            generatedGhosts.Remove(generatedGhosts[i]);
+        }
+    }
 
-    }*/
 
+    private void Epoch() {
+        if (gameRunning == false) {
+            // calculate fitness score
+            // perform operations 
+            // loop through population, decode each, after decoding one you instantiate the ghost prefab right away
+        }
+
+    }
     // Accessor methods
 
     public int GetGeneration() {

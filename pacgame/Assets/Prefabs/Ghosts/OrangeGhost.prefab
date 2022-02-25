@@ -117,14 +117,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghostNodePositions: 2
   ghostColor: 3
-  ghostNodeLeft: {fileID: 0}
-  ghostNodeRight: {fileID: 0}
-  ghostNodeCenter: {fileID: 0}
-  ghostNodeStart: {fileID: 0}
+  ghostNodeLeft: {fileID: 1041328239456357289, guid: 9a1e306116cd5ec489c5662fba5be7c7, type: 3}
+  ghostNodeRight: {fileID: 816013295424291296, guid: 8297eec10018ca44fa35f0508a390ae3, type: 3}
+  ghostNodeCenter: {fileID: 6435307761961734331, guid: edfbf25be77215d4081d2d2a522e1dc5, type: 3}
+  ghostNodeStart: {fileID: 431805905574451218, guid: 5542482b359b90f4fac662589c2068aa, type: 3}
   startingNode: {fileID: 0}
   leaveHome: 0
   playerCaught: 0
-  gameManagerObj: {fileID: 0}
+  gameManagerObj: {fileID: 4964835847179624359, guid: 128c30c578f25bd4e9cf206381f8972d, type: 3}
   gameManager: {fileID: 0}
 --- !u!50 &1290702797879092431
 Rigidbody2D:
