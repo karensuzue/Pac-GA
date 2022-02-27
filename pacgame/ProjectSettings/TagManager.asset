@@ -9,6 +9,9 @@ TagManager:
   - GhostNode
   - RedGhost
   - OrangeScatter
+  - PinkGhost
+  - BlueGhost
+  - OrangeGhost
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6729077687467892993}
   - component: {fileID: 6729077687467892994}
   - component: {fileID: 6729077687467893119}
+  - component: {fileID: 6726844073331363158}
   - component: {fileID: 6729077687467892992}
   - component: {fileID: 6729077688574770537}
   - component: {fileID: 6729077687467893118}
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6729077687467892995}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.060000002, y: -2.67, z: -0.59872913}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -102,7 +103,29 @@ MonoBehaviour:
   speed: 3
   currDirection: 
   nextDirection: 
-  isGhost: 0
+  isGhost: 1
+--- !u!114 &6726844073331363158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6729077687467892995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3142a0b1a86153d44ba177d1089bff14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  left: 0
+  right: 0
+  up: 0
+  down: 0
+  pellet: 1
+  energizer: 0
+  nodeLeft: {fileID: 0}
+  nodeRight: {fileID: 0}
+  nodeUp: {fileID: 0}
+  nodeDown: {fileID: 0}
 --- !u!114 &6729077687467892992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +146,7 @@ MonoBehaviour:
   ghostNodeStart: {fileID: 431805905574451218, guid: 5542482b359b90f4fac662589c2068aa, type: 3}
   startingNode: {fileID: 0}
   leaveHome: 0
+  player: {fileID: 0}
   playerCaught: 0
   gameManagerObj: {fileID: 4964835847179624359, guid: 128c30c578f25bd4e9cf206381f8972d, type: 3}
   gameManager: {fileID: 0}

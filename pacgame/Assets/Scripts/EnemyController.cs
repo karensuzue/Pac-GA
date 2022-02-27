@@ -50,7 +50,7 @@ public class EnemyController : MonoBehaviour
     public GameObject startingNode;
     public bool leaveHome = false;
 
-    private GameObject player;
+    public GameObject player;
     private MovementController movementController;
 
     public bool playerCaught;
@@ -93,6 +93,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Enemy Controller Running");
         movementController.nextNode = startingNode;
         leaveHome = true; // maybe control this from level controller later, or ask if ui is at respwan state
         // movementController.nextDirection = "right";

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HUDController : MonoBehaviour
 {
@@ -66,6 +67,10 @@ public class HUDController : MonoBehaviour
 
     public void RestartButton()
     {
-        gameManager.ResetScene();
+        // For scene "Game":
+        SceneManager.LoadScene("Game");
+
+        // For scene "Game GA"
+        // SceneManager.LoadScene("Game GA");
     }
 }

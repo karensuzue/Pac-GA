@@ -30,6 +30,7 @@ public class GeneticController : MonoBehaviour
     public GameObject pinkPrefab;
     public GameObject orangePrefab;
 
+    /*
     private enum GhostColors
     {
         red,
@@ -38,15 +39,28 @@ public class GeneticController : MonoBehaviour
         orange
     }
     private GhostColors ghostColor;
+    */
 
     public GameObject gameManagerObj; // drag and drop in Inspector
     public GameManager gameManager;
 
+    // public GameObject ghostsOriginal; // drag and drop in Inspector
+
     public GameObject ghostStart; // drag and drop in Inspector
-    private GameObject ghostStartLeft;
-    private GameObject ghostStartRight;
-    private GameObject ghostStartCenter;
-    private GameObject ghostStartStart;
+    public GameObject ghostStartLeft; // public for debug purpose
+    public GameObject ghostStartRight;
+    public GameObject ghostStartCenter;
+    public GameObject ghostStartStart;
+
+    public GameObject redOg; // original placements of ghosts in game to ensure instantiation placement is correct. Comes from disabled objects in hierarchy instead of prefab. 
+    public GameObject pinkOg;
+    public GameObject blueOg;
+    public GameObject orangeOg;
+
+    private GameObject prefabTest;
+    private GameObject prefabTest2;
+
+    private GameObject prefabTest3;
 
     void Awake()
     {
@@ -80,10 +94,28 @@ public class GeneticController : MonoBehaviour
         for (int i = 0; i < chromLength; i++) {
             Debug.Log(vecPopulation[0].vecBits[i]);   
         }*/
+        // GameObject redOg = GameObject.FindGameObjectWithTag("RedGhost");
 
-        GameObject prefab = Instantiate(redPrefab, Vector2.zero, Quaternion.identity);
-        prefab.transform.position = new Vector2((float)-0.01, (float)2.38);
+        prefabTest = Instantiate(redPrefab);
+        prefabTest.transform.position = redOg.transform.position;
+        prefabTest.GetComponent<MovementController>().nextNode = ghostStart;
 
+        prefabTest2 = Instantiate(pinkPrefab);
+        prefabTest2.transform.position = pinkOg.transform.position;
+
+        prefabTest3 = Instantiate(bluePrefab);
+        prefabTest3.transform.position = blueOg.transform.position;
+        
+        Debug.Log("initial position: ");
+        Debug.Log(prefabTest.transform.position);
+        Debug.Log(prefabTest2.transform.position);
+        Debug.Log(prefabTest3.transform.position);
+
+        // GameObject obj = GameObject.FindGameObjectWithTag("RedGhost");
+        // prefab.transform.position = obj.transform.position;
+        // prefab.transform.position = ;
+        // GameObject prefab2 = Instantiate(pinkPrefab);
+        // prefab2.transform.position = ghostStartRight.transform.position;
         
 
         // CreateStartingPopulation();
@@ -101,6 +133,11 @@ public class GeneticController : MonoBehaviour
         // }
 
         // Epoch();  
+
+        Debug.Log("changes in position: ");
+        Debug.Log(prefabTest.transform.position);
+        Debug.Log(prefabTest2.transform.position);
+        Debug.Log(prefabTest3.transform.position);
     }
 
     // Methods needed to implement:
