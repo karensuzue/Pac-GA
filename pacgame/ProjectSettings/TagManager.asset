@@ -12,6 +12,8 @@ TagManager:
   - PinkGhost
   - BlueGhost
   - OrangeGhost
+  - StartNode
+  - GameManager
   layers:
   - Default
   - TransparentFX

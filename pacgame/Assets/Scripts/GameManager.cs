@@ -126,7 +126,8 @@ public class GameManager : MonoBehaviour
 
     public void ResetScene()
     {
-        SceneManager.LoadScene("PACGAME");
+        // SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Game GA");
     }
 
 }

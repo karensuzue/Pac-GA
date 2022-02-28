@@ -45,12 +45,13 @@ public class GeneticController : MonoBehaviour
     public GameManager gameManager;
 
     // public GameObject ghostsOriginal; // drag and drop in Inspector
-
+    /*
     public GameObject ghostStart; // drag and drop in Inspector
     public GameObject ghostStartLeft; // public for debug purpose
     public GameObject ghostStartRight;
     public GameObject ghostStartCenter;
     public GameObject ghostStartStart;
+    */
 
     public GameObject redOg; // original placements of ghosts in game to ensure instantiation placement is correct. Comes from disabled objects in hierarchy instead of prefab. 
     public GameObject pinkOg;
@@ -66,10 +67,12 @@ public class GeneticController : MonoBehaviour
     {
         // initialization goes here
         gameManager = gameManagerObj.GetComponent<GameManager>();
+        /*
         ghostStartCenter = ghostStart.transform.GetChild(0).gameObject;
         ghostStartLeft = ghostStart.transform.GetChild(1).gameObject;
         ghostStartRight = ghostStart.transform.GetChild(2).gameObject;
         ghostStartStart = ghostStart.transform.GetChild(3).gameObject;
+        */
         ghostTotal = gameManager.ghostTotal;
 
     }
@@ -98,7 +101,7 @@ public class GeneticController : MonoBehaviour
 
         prefabTest = Instantiate(redPrefab);
         prefabTest.transform.position = redOg.transform.position;
-        prefabTest.GetComponent<MovementController>().nextNode = ghostStart;
+        // prefabTest.GetComponent<MovementController>().nextNode = ghostStart;
 
         prefabTest2 = Instantiate(pinkPrefab);
         prefabTest2.transform.position = pinkOg.transform.position;
