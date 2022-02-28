@@ -151,7 +151,7 @@ public class EnemyController2 : MonoBehaviour
                     targetPosition.y -= 2;
                 }
 
-                GameObject redGhost = GameObject.FindGameObjectWithTag("RedGhost");
+                GameObject redGhost = GameObject.FindGameObjectWithTag("InvisibleRedGhost");
                 float xDistance = targetPosition.x - redGhost.transform.position.x;
                 float yDistance = targetPosition.y - redGhost.transform.position.y;
 

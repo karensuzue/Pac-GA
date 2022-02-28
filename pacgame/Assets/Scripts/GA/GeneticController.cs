@@ -203,12 +203,7 @@ public class GeneticController : MonoBehaviour
         return decodedGenome;
     }
 
-    private void NumberToColorMap(List<int> decodedChrom) {
-        // maps first number of decoded chromosome to color
-
-    }
-
-    private void InstantiateGhostPrefab(List<int> decodedChrom) {
+    private void InstantiateGhostPrefab(List<int> decodedChrom) { // WORKS 
         // instantiate ghost prefab for a decode genome ([color, speed])
         // GameObject ghostPrefab = Instantiate<GameObject>();
         // 00 or 0 = Red, 01 or 1 = Pink, 10 or 2 = Blue, 11 or 3 = Orange
