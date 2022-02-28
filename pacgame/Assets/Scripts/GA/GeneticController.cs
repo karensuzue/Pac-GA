@@ -60,8 +60,8 @@ public class GeneticController : MonoBehaviour
 
     private GameObject prefabTest;
     private GameObject prefabTest2;
-
     private GameObject prefabTest3;
+    private GameObject prefabTest4;
 
     void Awake()
     {
@@ -77,7 +77,7 @@ public class GeneticController : MonoBehaviour
 
     }
     void Start() {
-        /*
+        
         // test to see if genome initialization works 
         Genome genom = new Genome(chromLength);
         for (int i = 0; i < chromLength; i++) {
@@ -91,28 +91,30 @@ public class GeneticController : MonoBehaviour
 
         InstantiateGhostPrefab(genomDecoded);
 
-
+        /*
         CreateStartingPopulation();
         Debug.Log("Test one from population");
         for (int i = 0; i < chromLength; i++) {
             Debug.Log(vecPopulation[0].vecBits[i]);   
         }*/
         // GameObject redOg = GameObject.FindGameObjectWithTag("RedGhost");
-
+        
+        /*
         prefabTest = Instantiate(redPrefab);
         prefabTest.transform.position = redOg.transform.position;
         // prefabTest.GetComponent<MovementController>().nextNode = ghostStart;
+        Debug.Log(redOg.transform.position);
+        Debug.Log(prefabTest.transform.position);
 
         prefabTest2 = Instantiate(pinkPrefab);
         prefabTest2.transform.position = pinkOg.transform.position;
 
         prefabTest3 = Instantiate(bluePrefab);
         prefabTest3.transform.position = blueOg.transform.position;
-        
-        Debug.Log("initial position: ");
-        Debug.Log(prefabTest.transform.position);
-        Debug.Log(prefabTest2.transform.position);
-        Debug.Log(prefabTest3.transform.position);
+
+        prefabTest4 = Instantiate(orangePrefab);
+        prefabTest4.transform.position = orangeOg.transform.position;
+        */
 
         // GameObject obj = GameObject.FindGameObjectWithTag("RedGhost");
         // prefab.transform.position = obj.transform.position;
@@ -137,10 +139,7 @@ public class GeneticController : MonoBehaviour
 
         // Epoch();  
 
-        Debug.Log("changes in position: ");
-        Debug.Log(prefabTest.transform.position);
-        Debug.Log(prefabTest2.transform.position);
-        Debug.Log(prefabTest3.transform.position);
+
     }
 
     // Methods needed to implement:
@@ -217,21 +216,34 @@ public class GeneticController : MonoBehaviour
         int speed = decodedChrom[1];
 
         GameObject prefab;
+        MovementController movementController;
 
         if (color == 0) { // red 
-            prefab = Instantiate(redPrefab, new Vector3((float)(-0.03400001), (float)(0.4330001), 0), Quaternion.identity);
+            prefab = Instantiate(redPrefab);
+            prefab.transform.position = redOg.transform.position;
+            movementController = prefab.GetComponent<MovementController>();
+            movementController.speed = speed;
             generatedGhosts.Add(prefab);
         }
         else if (color == 1) { // pink 
-            prefab = Instantiate(pinkPrefab, new Vector3((float)(0.06), (float)(-2.67), 0), Quaternion.identity);
+            prefab = Instantiate(pinkPrefab);
+            prefab.transform.position = pinkOg.transform.position;
+            movementController = prefab.GetComponent<MovementController>();
+            movementController.speed = speed;
             generatedGhosts.Add(prefab);
         }
         else if (color == 2) { // blue
-            prefab = Instantiate(bluePrefab, new Vector3((float)(-1.62), (float)(-2.66), 0), Quaternion.identity);
+            prefab = Instantiate(bluePrefab);
+            prefab.transform.position = blueOg.transform.position;
+            movementController = prefab.GetComponent<MovementController>();
+            movementController.speed = speed;
             generatedGhosts.Add(prefab);
         }
         else if (color == 3) { // orange
-            prefab = Instantiate(orangePrefab, new Vector3((float)(1.68), (float)(-2.7), 0), Quaternion.identity);
+            prefab = Instantiate(orangePrefab);
+            prefab.transform.position = orangeOg.transform.position;
+            movementController = prefab.GetComponent<MovementController>();
+            movementController.speed = speed;
             generatedGhosts.Add(prefab);
         }
     }

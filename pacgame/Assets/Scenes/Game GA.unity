@@ -1329,6 +1329,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PinkGhost
       objectReference: {fileID: 0}
+    - target: {fileID: 3352320090790099200, guid: 029b404b93e46aa4998292894cf7fdfe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3352320090790099202, guid: 029b404b93e46aa4998292894cf7fdfe, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -1520,6 +1524,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RedGhost
       objectReference: {fileID: 0}
+    - target: {fileID: 4978873244038878064, guid: 9ec9d590dcedf2942badb878166ba23d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4978873244038878065, guid: 9ec9d590dcedf2942badb878166ba23d, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1657,6 +1665,10 @@ PrefabInstance:
     - target: {fileID: 6987680659862151104, guid: b8a71599b8cb2b24b8fb2c3aa81b7559, type: 3}
       propertyPath: m_Name
       value: BlueGhost
+      objectReference: {fileID: 0}
+    - target: {fileID: 6987680659862151104, guid: b8a71599b8cb2b24b8fb2c3aa81b7559, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6987680659862151117, guid: b8a71599b8cb2b24b8fb2c3aa81b7559, type: 3}
       propertyPath: player
