@@ -64,7 +64,7 @@ public class EnemyController2 : MonoBehaviour
         gameManager = gameManagerObj.GetComponent<GameManager>();
         player = GameObject.FindGameObjectWithTag("Player"); // change this to the one in level controller
         movementController = gameObject.GetComponent<MovementController>();
-        movementController.isGhost = true;
+        // movementController.isGhost = true;
         
 
         /*
@@ -307,7 +307,7 @@ public class EnemyController2 : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && movementController.isGhost == true)
         {
             playerCaught = true; 
             gameManager.state = GameManager.GameStates.gameOver;
