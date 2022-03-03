@@ -13,11 +13,16 @@ public class GeneticController : MonoBehaviour
     private int colorChromLength = 2; // number of bits per color(type) chromosome
     private int speedIndexStart = 2; // speed starts at index 2 of the Genome bit list
     
-    private double mutationRate;
-    private double crossoverRate;
+    private float mutationRate = 0.001;
+    private float crossoverRate = 0.7;
 
     private double bestFitness; // best fitness score
-    private Genome bestGenome;
+    private double worstFitness;
+    private double totalFitness; // total fitness score of the current population 
+    private Genome fittestGenome;
+    private Genome worstGenome;
+    private int fittestGenomeIndex;
+    private int worstGenomeIndex;
 
     private int generation; // current generation
     private bool gameRunning; // true if game is currently running
@@ -63,21 +68,18 @@ public class GeneticController : MonoBehaviour
     private GameObject prefabTest3;
     private GameObject prefabTest4;
 
+    private static System.Random random = new System.Random();
+
     void Awake()
     {
         // initialization goes here
         gameManager = gameManagerObj.GetComponent<GameManager>();
-        /*
-        ghostStartCenter = ghostStart.transform.GetChild(0).gameObject;
-        ghostStartLeft = ghostStart.transform.GetChild(1).gameObject;
-        ghostStartRight = ghostStart.transform.GetChild(2).gameObject;
-        ghostStartStart = ghostStart.transform.GetChild(3).gameObject;
-        */
         ghostTotal = gameManager.ghostTotal;
+        generation = 0;
 
     }
     void Start() {
-        
+        /*
         // test to see if genome initialization works 
         Genome genom = new Genome(chromLength);
         for (int i = 0; i < chromLength; i++) {
@@ -90,7 +92,7 @@ public class GeneticController : MonoBehaviour
         Debug.Log(genomDecoded[1]);
 
         InstantiateGhostPrefab(genomDecoded);
-
+        */
         /*
         CreateStartingPopulation();
         Debug.Log("Test one from population");
@@ -122,20 +124,43 @@ public class GeneticController : MonoBehaviour
         // GameObject prefab2 = Instantiate(pinkPrefab);
         // prefab2.transform.position = ghostStartRight.transform.position;
         
+        gameRunning = true;
+        CreateStartingPopulation();
+        /*
+        for (int i = 0; i < chromLength; i++) {
+            Debug.Log(vecPopulation[0].vecBits[i]);   
+        }
+        for (int i = 0; i < chromLength; i++) {
+            Debug.Log(vecPopulation[1].vecBits[i]);   
+        }
+        for (int i = 0; i < chromLength; i++) {
+            Debug.Log(vecPopulation[2].vecBits[i]);   
+        }
+        for (int i = 0; i < chromLength; i++) {
+            Debug.Log(vecPopulation[3].vecBits[i]);   
+        }*/
 
-        // CreateStartingPopulation();
-        // gameRunning = true;
-        
+
+        for (int i = 0; i < ghostTotal; i++) {
+            List<int> decoded = Decode(vecPopulation[i].vecBits);
+            vecPopulation[i].vecDecoded = decoded;
+            vecPopulation[i].color = decoded[0];
+            vecPopulation[i].speed = decoded[1]; // might not be necessary 
+            InstantiateGhostPrefab(vecPopulation[i].vecDecoded);
+        }
     }
 
    
-    void FixedUpdate()
+    void Update()
     {
-        // GameManager.GameStates state = gameManager.state;
+        GameManager.GameStates state = gameManager.state;
 
-        // if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
-            // gameRunning = false;
-        // }
+        if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
+            gameRunning = false;
+            if (generatedGhosts.Count > 0) {
+                DestroyGhostPrefabs();
+            }
+        }
 
         // Epoch();  
 
@@ -152,31 +177,11 @@ public class GeneticController : MonoBehaviour
     // create start function
     // convert bin to decimal to use for decode
 
-    /*
-    private void Mutate(ref List<Genome> vecBits) {
-
-    }
-
-    private void Crossover(ref List<int> mom, ref List<int> dad, List<int> baby1, List<int> baby2) {
-        // we use single-point crossover
-    }
-
-    private Genome RouletteWheelSelection() {
-
-    }
-
-
-    private void CalculatePopulationFitness() {
-
-    }
-
-    private void Reset() {
-
-    }*/
-
+    
+    // PRIVATE METHODS
     private void CreateStartingPopulation() { // WORKS
         for (int i = 0; i < ghostTotal; i++) { // initialize 4 ghosts
-            Genome genome = new Genome(chromLength);
+            Genome genome = new Genome(chromLength, random);
             vecPopulation.Add(genome);
         }   
     }
@@ -243,15 +248,142 @@ public class GeneticController : MonoBehaviour
         }
     }
     
-    private void DestroyGhostPrefabs() {
-        // destroys all ghost prefabs on screen
-        for (int i = 0; i < ghostTotal; i++) {
-            generatedGhosts.Remove(generatedGhosts[i]);
+    private void DestroyGhostPrefabs() { // WORKS
+        // destroys all ghost prefabs on screen, prepare for next one
+        for (int i = 0; i < generatedGhosts.Count; i++) {
+            GameObject current = generatedGhosts[i];
+            generatedGhosts.RemoveAt(i);
+            Destroy(current);
         }
     }
 
 
-    private void Epoch() {
+    private double FitnessFunction() {
+        // updates fitness score to one individual 
+        double fitness;
+
+
+        return fitness;
+    }
+
+    private void CalculatePopulationFitness() {
+        // assigns fitness score to all members of the population
+
+    }
+
+    private void ScaleFitnessScore() {
+        // scale to prevent quick convergence and ensure population diversity 
+
+    }
+
+    // choose one good genome to bring over?
+    // check crossover on all genomes in population? or use selection functions to choose out two genomes for this purpose
+    // 
+    private Genome RouletteWheelSelection() {
+        // doesnt guarantee the best is selected, but those with higher fitness have a higher chance
+        // System.Random rand = new System.Random();
+        double slice = random.NextDouble() * (totalFitness); // random number between 0 and totalFitness
+
+        int selectedGenomeIndex = 0;
+        double currentTotal = 0;
+
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            currentTotal += vecPopulation[i].fitScore;
+
+            if (currentTotal > slice) {
+                selectedGenomeIndex = i;
+                break;
+            }
+
+        }
+        return vecPopulation[selectedGenomeIndex];
+    }
+
+    private Genome SUSSelection() {
+        // Stochastic Universal Sampling
+        // better for small population
+        // relies on fitness being nonnegative
+        // sigma scaling can give negative fitness score
+        int selectedGenomeIndex = 0;
+        if (worstFitness < 0) {
+            
+        }
+        return vecPopulation[selectedGenomeIndex];
+    }
+
+    private int BestGenomeFinder() {
+        int bestGenomeIndex = 0;
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            if (vecPopulation[i].fitScore > vecPopulation[bestGenomeIndex].fitScore) {
+                bestGenomeIndex = i;
+            }
+        }
+        return bestGenomeIndex;
+    }
+
+    private int WorstGenomeFinder() {
+        // removes the lowest performing genome in the population and returns it, good for updating worst genome
+        // add an age variable where it only removes the genome if its been there for at least 1-2 runs 
+        int worstIndex = 0;
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            if (vecPopulation[i].fitScore < vecPopulation[worstIndex].fitScore) {
+                if (generation == 0 || vecPopulation[i].age > 1) { // gives chance for diversity/innovation
+                    worstIndex = i;
+                }
+            }
+        }
+
+        return worstIndex;
+    }
+
+    private void Mutate(ref List<int> genomeBits) {
+        for (int i = 0; i < chromLength; i++) {
+            // flip?
+            if ((float)random.NextDouble() < mutationRate) {
+                genomeBits[i] = !genomeBits[i];
+            }
+        }
+    }
+
+    private void Crossover(ref List<int> mom, ref List<int> dad, ref List<int> child) { // in this case only one child is produced instead of 2 to ensure that there is always four ghosts in the game
+        // System.Random rand = new System.Random();
+        // List<int> child = new List<int>();
+        // modify this so that two best genomes are always chosen 
+        if (((float)random.NextDouble() > crossoverRate) || (mom == dad)) { // float uses less memory, double not needed in this case?
+            int choice = random.Next(2); // because only one child is produced rather than two, choose one child randomly
+            if (choice == 0) { child = mom; }
+            if (choice == 1) { child = dad; }
+            return;
+        }
+
+        else {
+            int crossPoint = random.Next(chromLength); // random point chosen to swap
+            int choice = random.Next(2);
+            if (choice == 0) {
+                for (int i = 0; i < crossPoint; i++) {
+                    child.Add(mom[i]);
+                }
+
+                for (int i = crossPoint; i < chromLength; i++) {
+                    child.Add(dad[i]);
+                }
+            }
+
+            if (choice == 1) {
+                for (int i = 0; i < crossPoint; i++) {
+                    child.Add(dad[i]);
+                }
+
+                for (int i = crossPoint; i < chromLength; i++) {
+                    child.Add(mom[i]);
+                }
+            }
+        }
+    }
+
+
+    // PUBLIC METHODS 
+    public void Epoch() {
         if (gameRunning == false) {
             // calculate fitness score
             // perform operations 
@@ -259,8 +391,9 @@ public class GeneticController : MonoBehaviour
         }
 
     }
-    // Accessor methods
 
+
+    // ACCESSOR METHODS 
     public int GetGeneration() {
         return generation;
     }
