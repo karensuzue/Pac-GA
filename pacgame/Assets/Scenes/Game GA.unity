@@ -598,6 +598,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733248287}
   m_CullTransparentMesh: 1
+--- !u!1 &742724243
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 742724245}
+  - component: {fileID: 742724244}
+  m_Layer: 0
+  m_Name: GeneticData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &742724244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742724243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea1cff12bde1c2445bdcfdc28521e8a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &742724245
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742724243}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.4889982, y: -1.775521, z: -282.11896}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &819719520
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,12 +1019,14 @@ MonoBehaviour:
   bluePrefab: {fileID: 6987680659862151104, guid: b8a71599b8cb2b24b8fb2c3aa81b7559, type: 3}
   pinkPrefab: {fileID: 3352320090790099200, guid: 029b404b93e46aa4998292894cf7fdfe, type: 3}
   orangePrefab: {fileID: 5260082096149860436, guid: d0df369f1e5481146b3c4520809a6cb3, type: 3}
-  gameManagerObj: {fileID: 1997700875}
-  gameManager: {fileID: 0}
   redOg: {fileID: 1570226022}
   pinkOg: {fileID: 1644781372}
   blueOg: {fileID: 1800240791}
   orangeOg: {fileID: 1684315640}
+  gameManagerObj: {fileID: 1997700875}
+  gameManager: {fileID: 0}
+  geneticDataObj: {fileID: 742724243}
+  geneticData: {fileID: 0}
 --- !u!1 &1997700875 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4964835847179624359, guid: 128c30c578f25bd4e9cf206381f8972d, type: 3}

@@ -97,7 +97,7 @@ public class EnemyController2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Enemy Controller Running");
+        // Debug.Log("Enemy Controller Running");
         startingNode = GameObject.FindGameObjectWithTag("StartNode");
         movementController.nextNode = startingNode;
         // leaveHome = true; // maybe control this from level controller later, or ask if ui is at respwan state
@@ -301,6 +301,7 @@ public class EnemyController2 : MonoBehaviour
                 nextDirection = "right";
             }
         }
+        // Debug.Log(shortestDistance);
 
         return nextDirection;
     }
