@@ -1471,6 +1471,7 @@ MonoBehaviour:
   playerCaught: 0
   gameManagerObj: {fileID: 1997700875}
   gameManager: {fileID: 0}
+  distanceFromPlayer: 0
 --- !u!61 &3865546687425775910
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -14,7 +14,10 @@ public class Genome
 
     public int age = 0;
 
-    public GameObject prefab; // maybe needed
+    public double totalDistancePlayer = 0.0; // total distance from player, used to calculate average
+    public bool playerCollide = false;
+
+    public GameObject prefab;
 
     // Constructor, initialize Genome with random binary digits
     // 00 = Red, 01 = Pink, 10 = Blue, 11 = Orange

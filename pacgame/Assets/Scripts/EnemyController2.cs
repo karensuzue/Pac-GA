@@ -58,6 +58,8 @@ public class EnemyController2 : MonoBehaviour
     public GameObject gameManagerObj;
     public GameManager gameManager;
 
+    // public float distanceFromPlayer;
+
     void Awake() 
     {
         gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");
@@ -108,6 +110,10 @@ public class EnemyController2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.state == GameManager.GameStates.win || gameManager.state == GameManager.GameStates.gameOver) {
+            // loop ensures that ghosts will stop moving when playthrough ends
+            movementController.nextNode = null; // will give you an error
+        }
         /*if (transform.position == player.transform.position)
         {
             playerCaught = true; 
