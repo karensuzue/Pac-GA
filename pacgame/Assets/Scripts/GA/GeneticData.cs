@@ -9,6 +9,7 @@ public class GeneticData : MonoBehaviour
 
     public static List<Genome> vecPopulation = new List<Genome>();
     public static int generation = 0; // current generation
+    public static double shortestPlayTime = 120; 
 
     void Start() {
         Debug.Log(generation);
@@ -19,8 +20,12 @@ public class GeneticData : MonoBehaviour
 
     public List<Genome> GetVecPopulation() { return vecPopulation; }
 
+    public double GetShortestPlayTime() { return shortestPlayTime; }
+
     // SET METHODS
     public void SetGeneration(int gen) { generation = gen; }
 
     public void SetVecPopulation(List<Genome> pop) { vecPopulation = pop; }
+
+    public void SetShortestPlayTime(double time) { shortestPlayTime = time; } 
 }

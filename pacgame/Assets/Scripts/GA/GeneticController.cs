@@ -6,50 +6,69 @@ using System;
 // SAVED = Made static variable in GeneticData.cs, retain information after reloading scene
 public class GeneticController : MonoBehaviour
 {
-    private List<Genome> vecPopulation = new List<Genome>(); // SAVED
+    // Population:
+    private List<Genome> vecPopulation = new List<Genome>(); // SAVE TO GENETICDATA
     private int popSize = 4; // population size
+    
+    // Chromosome Representation:
+    // 0 0 | 0 0 0
+    // color | speed
     private int chromLength = 5; // number of bits per chromosome (vecBits size)
     private int speedChromLength = 3; // number of bits per speed chromosome
     private int colorChromLength = 2; // number of bits per color(type) chromosome
     private int speedIndexStart = 2; // speed starts at index 2 of the Genome bit list
     
+    // Mating Rates:
     private float mutationRate = 0.001f;
     private float crossoverRate = 0.7f;
 
+    // Fitness:
     private double bestFitness; // best fitness score
     private double worstFitness; 
     private double totalFitness; // total fitness score of the current population
+    private double averageFitness;
     private Genome fittestGenome; // fittest genome of the population
     private Genome worstGenome; 
-    private int fittestGenomeIndex;
+    private int fittestGenomeIndex; // index to access the fittest genome in the population
     private int worstGenomeIndex; 
-
-    private int generation; // current generation
+    
+    // Game and Prefabs:
+    private int generation; // current generation, increases each time Start() is run
     private bool gameRunning; // true if game is currently running
     private List<GameObject> generatedGhosts = new List<GameObject>(); // ghosts instantiated on screen
+    bool prefabsCleared; // true if prefabs are all cleared
 
+    // Prefabs to be instantiated on screen
     // 00 or 0 = Red, 01 or 1 = Pink, 10 or 2 = Blue, 11 or 3 = Orange
     public GameObject redPrefab;
     public GameObject bluePrefab;
     public GameObject pinkPrefab;
     public GameObject orangePrefab;
 
-    public GameObject redOg; // original placements of ghosts in game to ensure instantiation placement is correct. Comes from disabled objects in hierarchy instead of prefab. 
+    // Original placements of ghosts in game.
+    // Ensures instantiation placement is correct. 
+    // These are disabled objects in the hierarchy.  
+    public GameObject redOg; 
     public GameObject pinkOg;
     public GameObject blueOg;
     public GameObject orangeOg;
 
+    // GameManager:
     public GameObject gameManagerObj; // drag and drop in Inspector
     public GameManager gameManager;
     // public float timeComplete; // 1 playthrough completion time
 
-    public GameObject geneticDataObj;
+    // GeneticData, where things get saved:
+    public GameObject geneticDataObj; // Drop in Inspector
     public GeneticData geneticData;
 
-    private static System.Random random = new System.Random();
-    private double nextUpdate = 0.0; // update "interval" in seconds. Will continue to accumulate.
-    public double intervalCount = 0.0; // number of second intervals, for calculating average. Similar to nextUpdate but stops updating once playthrough ends
-
+    // Timer-related:
+    private static System.Random random = new System.Random(); // helps generate random numbers
+    private double nextUpdate = 0.0; // update "interval" in seconds, used for UpdateEverySecond
+    public double intervalCount = 0.0; // number of 1-second intervals, for calculating average. 
+            // Similar to nextUpdate but stops updating once playthrough ends. 
+    
+    // The player!
     public GameObject player;
 
     void Awake()
@@ -72,22 +91,24 @@ public class GeneticController : MonoBehaviour
         generation += 1;
         geneticData.SetGeneration(generation); // send to GeneticData
 
-        if (generation == 1) {
+        // If this is the first generation, initialize the population
+        if (generation == 1) { 
             CreateStartingPopulation();
 
-            for (int i = 0; i < popSize; i++) { // Go through all genomes in pop
+            for (int i = 0; i < popSize; i++) { // Go through all genomes in population
                 List<int> decoded = Decode(vecPopulation[i].vecBits); // Decode, returns [color, speed]
-                vecPopulation[i].vecDecoded = decoded; // Send to the current genome
-                vecPopulation[i].color = decoded[0]; // Send to current genome
-                vecPopulation[i].speed = decoded[1]; // Send to current genome
+                vecPopulation[i].vecDecoded = decoded; // Send to the current genome what's decoded
+                vecPopulation[i].color = decoded[0]; // Send to current genome it's decoded color
+                vecPopulation[i].speed = decoded[1]; // Send to current genome it's decoded speed
 
-                InstantiateGhostPrefab(vecPopulation[i].vecDecoded); // Instantiate prefabs, one ghost added to generatedGhosts
-                vecPopulation[i].prefab = generatedGhosts[i]; // Send to current genome, gain access to the ghost object
+                InstantiateGhostPrefab(vecPopulation[i].vecDecoded); // Instantiate prefab, one ghost added to generatedGhosts
+                // Send to current genome, gain access to the ghost object on screen
+                vecPopulation[i].prefab = generatedGhosts[i]; // WORKS
+                    
             }
-
-            // geneticData.SetVecPopulation(vecPopulation); // save changes, send to GeneticData
         }
 
+        // If this is not the first generation, run Epoch loop
         if (generation > 1) {
             Epoch();
         }
@@ -95,6 +116,7 @@ public class GeneticController : MonoBehaviour
         UpdateGenomeAge(); // all genomes +1 in age, age defined by number of generations survived 
         geneticData.SetVecPopulation(vecPopulation); // any changes to vecPopulation has to be resaved to GeneticData   
         
+        prefabsCleared = false; // switch to keep Update from constantly trying to clear prefabs (even when there's none)
     }
 
    
@@ -110,9 +132,9 @@ public class GeneticController : MonoBehaviour
         }
 
         for (int i = 0; i < vecPopulation.Count; i++) {
-            // the idea is that whichever ghost collides with the player first will have a boolean value set to true
-            // simply find that ghost.
-            // if multiple ghosts have this boolean value checked, its fine, they probably overlapped
+            // the ghost that collides with the player first will have its EnemyController's playerCaught set to true
+            // simply find that ghost, then set playerCollide to true for the Genome object
+            // it is possible for multiple ghosts to have this boolean value checked if they overlapped
             GameObject currentPrefab = vecPopulation[i].prefab;
             EnemyController2 enemyController = currentPrefab.GetComponent<EnemyController2>();
             if (enemyController.playerCaught == true) {
@@ -124,10 +146,14 @@ public class GeneticController : MonoBehaviour
         if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
             // if game won or over
             gameRunning = false; // game no longer running, paused
+            if (gameManager.endTime < geneticData.GetShortestPlayTime()) {
+                geneticData.SetShortestPlayTime(gameManager.endTime);
+            }
 
-            if (generatedGhosts.Count > 0) {
-                DestroyGhostPrefabs();
+            if (generatedGhosts.Count > 0 && prefabsCleared == false) {
+                DestroyGhostPrefabs(); // destroy after ghosts stop moving to accurately check which ghost was the one to collide with player
                  // move to next generation
+                prefabsCleared = true;
             }
         }
     }
@@ -226,19 +252,44 @@ public class GeneticController : MonoBehaviour
         }
     }
 
+    /*
+    private async void DestroyGhostPrefabs2() { // for debug purposes, WORKS
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            GameObject current = vecPopulation[i].prefab;
+            vecPopulation[i].prefab = null;
+            Destroy(current);
+        }
+    }
+    */
+
     private double FitnessFunction(Genome gen) {
-        // updates fitness score to one individual 
+        // updates fitness score for one individual 
         double fitness = 0;
-        double distance = gen.totalDistancePlayer;
+        double average = gen.totalDistancePlayer / intervalCount; // average distance away from player
         GameObject prefab = gen.prefab;
 
-        if (gen.playerCollide == true) {
-            fitness += 10;
+        // 2 approaches: we could do it like this, where its separate under kill and win conditions
+        // or just have the gamemanger.end time thing in a separate if clause to apply for both kill and win conditions
+        if (gen.playerCollide == true) { // if ghost collides with player
+            fitness += 20; // encourages more aggression
+            if (gameManager.endTime < 5.0) { // if this ghost kills player too quickly, deduct
+                fitness -= 30; // encourages more passivity
+
+            }
+        }
+
+        if (gameManager.state == GameManager.GameStates.win) {
+            if (gameManager.endTime < geneticData.GetShortestPlayTime()) { // if player wins too quickly, deduct points for all ghosts
+                fitness -= 5; // more aggression
+            }
         }
         
-
-
-
+        // maximum distance from player is about 40.361
+        // maximum fitness deducted is about 5.361
+        if (average > 35) { // if average distance from playe is greater than threshold
+            fitness -= (average - 35); // the further the distance, the greater the deduction
+            // fitness -= Math.Pow(average - 35, 2); // aggressively encourages ghost to move towards player more
+        }
 
         return fitness;
     }
@@ -252,9 +303,47 @@ public class GeneticController : MonoBehaviour
 
     }
 
-    private void ScaleFitnessScore() {
+    private async void ScaleFitnessScore() {
         // scale to prevent quick convergence and ensure population diversity 
+        // Sigma scaling method
+        // directly changes the fitness scores of each member of the population
 
+        // calculate the standard deviation
+        double runningTotal = 0;
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            runningTotal += Math.Pow((vecPopulation[i].fitScore - averageFitness), 2);
+        }
+        double variance = runningTotal / popSize;
+        double standev = Math.Sqrt(variance);
+
+        // reassign fitness scores
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            double oldFitness = vecPopulation[i].fitScore;
+            vecPopulation[i].fitScore = (oldFitness - averageFitness) / (2 * standev);
+        }
+
+        CalcBestWorstAvTotFitness();
+    }
+
+    private void CalcBestWorstAvTotFitness() {
+        // use to calculate or recalculate the best/worst/average/total fitness values
+        fittestGenomeIndex = BestGenomeFinder();
+        fittestGenome = vecPopulation[fittestGenomeIndex];
+        bestFitness = fittestGenome.fitScore;
+
+        worstGenomeIndex = WorstGenomeFinder();
+        worstGenome = vecPopulation[worstGenomeIndex];
+        worstFitness = worstGenome.fitScore;
+
+        // total
+        double total = 0;
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            total += vecPopulation[i].fitScore;
+        }
+
+        totalFitness = total;
+
+        averageFitness = total / vecPopulation.Count;
     }
 
     // choose one good genome to bring over?
@@ -295,7 +384,9 @@ public class GeneticController : MonoBehaviour
     }*/
 
     private int BestGenomeFinder() {
-        // 1 best genome goes to the next generation`
+        // 1 best genome goes to the next generation
+        // good with roulette wheel selection
+        // returns the index of the best genome
         int bestGenomeIndex = 0;
         for (int i = 0; i < vecPopulation.Count; i++) {
             if (vecPopulation[i].fitScore > vecPopulation[bestGenomeIndex].fitScore) {
@@ -380,6 +471,9 @@ public class GeneticController : MonoBehaviour
             // calculate fitness score
             // perform operations 
             // loop through population, decode each, after decoding one you instantiate the ghost prefab right away
+            CalculatePopulationFitness();
+            List<Genome> newPop = new List<Genome>();
+
         }
 
     }
