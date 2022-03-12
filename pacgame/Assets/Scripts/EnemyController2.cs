@@ -112,7 +112,7 @@ public class EnemyController2 : MonoBehaviour
     {
         if (gameManager.state == GameManager.GameStates.win || gameManager.state == GameManager.GameStates.gameOver) {
             // loop ensures that ghosts will stop moving when playthrough ends
-            movementController.nextNode = null; // will give you an error
+            movementController.nextNode = null;
         }
         /*if (transform.position == player.transform.position)
         {

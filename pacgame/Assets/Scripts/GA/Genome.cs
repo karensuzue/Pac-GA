@@ -29,6 +29,11 @@ public class Genome
         }
     }
 
+    // Constructor 2, initialize Genome with nothing
+    public Genome() {
+        fitScore = 0;
+    }
+
     // Get - Set methods. Implement if necessary. 
 
 }
