@@ -9,7 +9,7 @@ public class GeneticData : MonoBehaviour
 
     public static List<Genome> vecPopulation = new List<Genome>();
     public static int generation = 0; // current generation
-    public static double shortestPlayTime = 120; 
+    public static double shortestPlayTime = 100; 
 
     void Start() {
         Debug.Log(generation);
