@@ -58,8 +58,9 @@ public class EnemyController2 : MonoBehaviour
     public GameObject gameManagerObj;
     public GameManager gameManager;
 
+    // FOR DEBUG ONLY
     // public float distanceFromPlayer;
-
+    public double fitness;
     void Awake() 
     {
         gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");

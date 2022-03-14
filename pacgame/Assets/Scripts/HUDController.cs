@@ -71,9 +71,9 @@ public class HUDController : MonoBehaviour
         //SceneManager.LoadScene("Game");
 
         // For scene "Game GA"
-        // SceneManager.LoadScene("Game GA");
+        SceneManager.LoadScene("Game GA");
 
         // For scene "Game GA Improved"
-        SceneManager.LoadScene("Game GA Improved");
+        // SceneManager.LoadScene("Game GA Improved");
     }
 }

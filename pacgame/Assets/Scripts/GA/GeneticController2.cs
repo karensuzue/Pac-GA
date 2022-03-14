@@ -85,7 +85,7 @@ public class GeneticController2 : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    void Start() {
+    async void Start() {
         gameRunning = true;
 
         generation += 1;
@@ -113,6 +113,13 @@ public class GeneticController2 : MonoBehaviour
         // If this is not the first generation, run Epoch
         if (generation > 1) {
             Epoch();
+        }
+
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            // FOR DEBUG:
+            EnemyController2 enemyCtrl = vecPopulation[i].prefab.GetComponent<EnemyController2>();
+            enemyCtrl.fitness = vecPopulation[i].fitScore;
+            Debug.Log(vecPopulation[i].fitScore);
         }
 
         geneticData.SetVecPopulation(vecPopulation); // any changes to vecPopulation has to be resaved to GeneticData   
@@ -255,7 +262,7 @@ public class GeneticController2 : MonoBehaviour
         }
     }
     
-    private void DestroyGhostPrefabs() { // WORKS
+    private async void DestroyGhostPrefabs() { // WORKS
         // destroys all ghost prefabs on screen, prepare for next one
         for (int i = 0; i < generatedGhosts.Count; i++) {
             GameObject current = generatedGhosts[i];
@@ -480,10 +487,14 @@ public class GeneticController2 : MonoBehaviour
         CalcBestWorstAvTotFitness(); 
         // Scale fitness scores, also update BWTA scores in the process
         // Updated fitness will be used for selection
-        ScaleFitnessScores(); 
+        // ScaleFitnessScores();
 
         // Create new population
         List<Genome> newPop = vecPopulation;
+
+        // Age is considered (implemented when picking out worst genome).
+        // Allows innovation to mature before it's removed.
+        newPop.RemoveAt(worstGenomeIndex);
 
         // Crossover time! Produce 2 children genomes
         Genome mom = RouletteWheelSelection();
@@ -492,19 +503,11 @@ public class GeneticController2 : MonoBehaviour
         Genome baby2 = new Genome();
         Crossover(ref mom.vecBits, ref dad.vecBits, ref baby1.vecBits, ref baby2.vecBits);
 
-        if (baby1.vecBits.Count > 0) {
-            Mutate(ref baby1.vecBits);
-            newPop.Add(baby1);
-        }
+        Mutate(ref baby1.vecBits);
+        Mutate(ref baby2.vecBits);
 
-        if (baby2.vecBits.Count > 0) {
-            Mutate(ref baby2.vecBits);
-            newPop.Add(baby2);
-        }
-
-        // Age is considered (implemented when picking out worst genome).
-        // Allows innovation to mature before it's removed.
-        newPop.RemoveAt(worstGenomeIndex);
+        newPop.Add(baby1);
+        newPop.Add(baby2);
 
         // Copy current population to new population
         vecPopulation = newPop;

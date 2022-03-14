@@ -70,6 +70,7 @@ public class GeneticController : MonoBehaviour
     
     // The player!
     public GameObject player;
+    // public bool fitnessCalculated;
 
     void Awake()
     {
@@ -87,6 +88,7 @@ public class GeneticController : MonoBehaviour
 
     void Start() {
         gameRunning = true;
+        // fitnessCalculated = false;
 
         generation += 1;
         geneticData.SetGeneration(generation); // send to GeneticData
@@ -114,6 +116,13 @@ public class GeneticController : MonoBehaviour
         if (generation > 1) {
             Epoch();
         }
+
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            // FOR DEBUG:
+            EnemyController2 enemyCtrl = vecPopulation[i].prefab.GetComponent<EnemyController2>();
+            enemyCtrl.fitness = vecPopulation[i].fitScore;
+        }
+
 
         geneticData.SetVecPopulation(vecPopulation); // any changes to vecPopulation has to be resaved to GeneticData   
         
@@ -147,11 +156,6 @@ public class GeneticController : MonoBehaviour
         if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
             // if game won or over
             gameRunning = false; // game no longer running, paused
-
-            if (generatedGhosts.Count > 0 && prefabsCleared == false) {
-                DestroyGhostPrefabs(); // destroy after ghost collision with player is checked
-                prefabsCleared = true;
-            }
         }
 
         // Debug.Log("OLD TIME SCORE");
@@ -168,7 +172,7 @@ public class GeneticController : MonoBehaviour
         // Debug.Log(geneticData.GetShortestPlayTime());
     }
 
-    private async void UpdateEverySecond() { // WORKS
+    private void UpdateEverySecond() { // WORKS
         // UpdateEverySecond is called once per second 
         if (gameRunning = true) {
             // continue adding distance until playthrough ends 
@@ -178,8 +182,8 @@ public class GeneticController : MonoBehaviour
                 vecPopulation[i].totalDistancePlayer += distance;
             }
 
-            Debug.Log("TOTAL DISTANCE DEBUG");
-            Debug.Log(vecPopulation[1].totalDistancePlayer);
+            // Debug.Log("TOTAL DISTANCE DEBUG");
+            // Debug.Log(vecPopulation[1].totalDistancePlayer);
         }
     }
     
@@ -308,13 +312,14 @@ public class GeneticController : MonoBehaviour
         // assigns fitness score to all members of the population
         for (int i = 0; i < vecPopulation.Count; i++) {
             double fitness = FitnessFunction(vecPopulation[i]);
+            Debug.Log(fitness);
             vecPopulation[i].fitScore = fitness;
-            Debug.Log("fitness");
+            Debug.Log("vecPop fitness");
             Debug.Log(vecPopulation[i].fitScore);
         }
     }
 
-    private async void ScaleFitnessScores() {
+    private void ScaleFitnessScores() {
         // scale to prevent quick convergence and ensure population diversity 
         // Sigma scaling method
         // directly changes the fitness scores of each member of the population
@@ -473,9 +478,8 @@ public class GeneticController : MonoBehaviour
 
 
     // PUBLIC METHODS 
-    public async void Epoch() {
+    public void Epoch() {
         // if (gameRunning == false) { // if game is at "Play Again?" screen
-
             // Update population fitness
             CalculatePopulationFitness(); 
             // Update best, worst, total, and average fitness scores
@@ -483,6 +487,12 @@ public class GeneticController : MonoBehaviour
             // Scale fitness scores, also update BWTA scores in the process
             // Updated fitness will be used for selection
             ScaleFitnessScores(); 
+
+            // Destroy prefabs on screen
+            if (generatedGhosts.Count > 0 && prefabsCleared == false) {
+                DestroyGhostPrefabs(); // destroy after ghost collision with player is checked
+                prefabsCleared = true;
+            }
 
             // Create new population
             List<Genome> newPop = new List<Genome>();
@@ -525,7 +535,8 @@ public class GeneticController : MonoBehaviour
                 vecPopulation[i].speed = decoded[1]; // Send to current genome it's decoded speed
 
                 // Instantiate prefab, one ghost added to generatedGhosts
-                InstantiateGhostPrefab(vecPopulation[i].vecDecoded); 
+                InstantiateGhostPrefab(vecPopulation[i].vecDecoded);
+                prefabsCleared = false; // new prefabs instantiated, so false
 
                 // Send to current genome, gain access to the ghost object on screen
                 vecPopulation[i].prefab = generatedGhosts[i];
