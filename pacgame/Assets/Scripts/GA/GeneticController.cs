@@ -65,12 +65,12 @@ public class GeneticController : MonoBehaviour
     // Timer-related:
     private static System.Random random = new System.Random(); // helps generate random numbers
     private double nextUpdate = 0.0; // update "interval" in seconds, used for UpdateEverySecond
-    public double intervalCount = 0.0; // number of 1-second intervals, for calculating average. 
+    public int intervalCount = 0; // number of 1-second intervals, for calculating average. 
             // Similar to nextUpdate but stops updating once playthrough ends. 
     
     // The player!
     public GameObject player;
-    // public bool fitnessCalculated;
+    public bool fitnessCalculated;
 
     void Awake()
     {
@@ -82,6 +82,7 @@ public class GeneticController : MonoBehaviour
         // get "saves" from GeneticData
         generation = geneticData.GetGeneration();
         vecPopulation = geneticData.GetVecPopulation();
+        intervalCount = geneticData.GetIntervalCount();
 
         player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -117,8 +118,12 @@ public class GeneticController : MonoBehaviour
             Epoch();
         }
 
+        // fitnessCalculated == true; // true
+        intervalCount = 0; // reset intervalCount. Has to be done after fitness is calculated to prevent NaN
+        // fitnessCalculated = false;
+
         for (int i = 0; i < vecPopulation.Count; i++) {
-            // FOR DEBUG:
+            // FOR DEBUG: Set enemy controller fitness = genome fitness to observe
             EnemyController2 enemyCtrl = vecPopulation[i].prefab.GetComponent<EnemyController2>();
             enemyCtrl.fitness = vecPopulation[i].fitScore;
         }
@@ -136,7 +141,7 @@ public class GeneticController : MonoBehaviour
         if (Time.time >= nextUpdate) {
             nextUpdate = Mathf.FloorToInt(Time.time)+1;
             if (gameRunning == true) {
-                intervalCount = nextUpdate; // WORKS 
+                intervalCount += 1; // WORKS 
             }
             UpdateEverySecond();
         }
@@ -156,6 +161,7 @@ public class GeneticController : MonoBehaviour
         if (state == GameManager.GameStates.win || state == GameManager.GameStates.gameOver) {
             // if game won or over
             gameRunning = false; // game no longer running, paused
+            geneticData.SetIntervalCount(intervalCount);
         }
 
         // Debug.Log("OLD TIME SCORE");
@@ -174,7 +180,7 @@ public class GeneticController : MonoBehaviour
 
     private void UpdateEverySecond() { // WORKS
         // UpdateEverySecond is called once per second 
-        if (gameRunning = true) {
+        if (gameRunning == true) {
             // continue adding distance until playthrough ends 
             for (int i = 0; i < vecPopulation.Count; i++) {
                 GameObject currentPrefab = vecPopulation[i].prefab;
@@ -283,6 +289,7 @@ public class GeneticController : MonoBehaviour
         // updates fitness score for one individual 
         double fitness = 0;
         double average = gen.totalDistancePlayer / intervalCount; // average distance away from player per second
+        Debug.Log(average);
 
         if (gen.playerCollide == true) { // if ghost collides with player
             fitness += 20; // encourages more aggression
@@ -314,8 +321,8 @@ public class GeneticController : MonoBehaviour
             double fitness = FitnessFunction(vecPopulation[i]);
             Debug.Log(fitness);
             vecPopulation[i].fitScore = fitness;
-            Debug.Log("vecPop fitness");
-            Debug.Log(vecPopulation[i].fitScore);
+            // Debug.Log("vecPop fitness");
+            // Debug.Log(vecPopulation[i].fitScore);
         }
     }
 
@@ -487,6 +494,8 @@ public class GeneticController : MonoBehaviour
             // Scale fitness scores, also update BWTA scores in the process
             // Updated fitness will be used for selection
             ScaleFitnessScores(); 
+
+            // fitnessCalculated = true;
 
             // Destroy prefabs on screen
             if (generatedGhosts.Count > 0 && prefabsCleared == false) {

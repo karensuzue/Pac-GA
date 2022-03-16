@@ -8,7 +8,7 @@ public class Genome
     public List<int> vecBits = new List<int>(); // vector of binary digits representing genes.
     // indices 0 - 1 = ghost types. indices 2 - 4 = ghost speed. 
     public List<int> vecDecoded = new List<int>(); // vector of size 2. index 0 = color, index 1 = speed.
-    public double fitScore; // fitness value of genome
+    public double fitScore = 0.0; // fitness value of genome
     public int speed; // speed deciphered from genes. 
     public int color; // color deciphered from genes, probably unnecessary
 
