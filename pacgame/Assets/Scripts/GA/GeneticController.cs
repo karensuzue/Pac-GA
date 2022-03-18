@@ -126,6 +126,8 @@ public class GeneticController : MonoBehaviour
             // FOR DEBUG: Set enemy controller fitness = genome fitness to observe
             EnemyController2 enemyCtrl = vecPopulation[i].prefab.GetComponent<EnemyController2>();
             enemyCtrl.fitness = vecPopulation[i].fitScore;
+            Debug.Log("enemyctrl fitness");
+            Debug.Log(enemyCtrl.fitness);
         }
 
 
@@ -285,12 +287,11 @@ public class GeneticController : MonoBehaviour
     }
     */
 
-    private double FitnessFunction(Genome gen) {
+    private double FitnessFunction(Genome gen) { // WORKS
         // updates fitness score for one individual 
         double fitness = 0;
         double average = gen.totalDistancePlayer / intervalCount; // average distance away from player per second
-        Debug.Log(average);
-
+        
         if (gen.playerCollide == true) { // if ghost collides with player
             fitness += 20; // encourages more aggression
             if (gameManager.endTime < 5.5) { // if this ghost kills player too quickly, deduct
@@ -315,14 +316,15 @@ public class GeneticController : MonoBehaviour
         return fitness;
     }
 
-    private void CalculatePopulationFitness() {
+    private void CalculatePopulationFitness() { // WORKS
         // assigns fitness score to all members of the population
         for (int i = 0; i < vecPopulation.Count; i++) {
             double fitness = FitnessFunction(vecPopulation[i]);
+            Debug.Log("fitness");
             Debug.Log(fitness);
             vecPopulation[i].fitScore = fitness;
-            // Debug.Log("vecPop fitness");
-            // Debug.Log(vecPopulation[i].fitScore);
+            Debug.Log("vecPop fitness");
+            Debug.Log(vecPopulation[i].fitScore);
         }
     }
 
@@ -336,8 +338,13 @@ public class GeneticController : MonoBehaviour
         for (int i = 0; i < vecPopulation.Count; i++) {
             runningTotal += Math.Pow((vecPopulation[i].fitScore - averageFitness), 2);
         }
+        Debug.Log("runningtotal");
+        Debug.Log(runningTotal);
         double variance = runningTotal / popSize;
         double standev = Math.Sqrt(variance);
+
+        Debug.Log("standev");
+        Debug.Log(standev);
 
         // loop through population, reassign fitness scores
         for (int i = 0; i < vecPopulation.Count; i++) {
@@ -521,6 +528,7 @@ public class GeneticController : MonoBehaviour
             newPop.Add(baby1); // Genome 1
             newPop.Add(baby2); // Genome 2
 
+            /*
             // Add fittest Genome
             newPop.Add(fittestGenome); // Genome 3
             vecPopulation.RemoveAt(fittestGenomeIndex); // can now remove as RWS needs the original, unmodified population
@@ -528,6 +536,18 @@ public class GeneticController : MonoBehaviour
             // Add second fittest Genome
             int secondfittestIndex = BestGenomeFinder(); // Genome 4
             newPop.Add(vecPopulation[secondfittestIndex]);
+            */
+
+            // Probabilistically select 2 members to add to the next generation based on their fitness
+            // Probability (1-r) * p, r being the fraction of the population to be replaced by
+            // Crossover (0.5) and p being the number of hypotheses to be included in the population.
+            Genome selectedGenome1 = RouletteWheelSelection();
+            newPop.Add(selectedGenome1);
+            vecPopulation.Remove(selectedGenome1);
+
+            Genome selectedGenome2 = RouletteWheelSelection();
+            newPop.Add(selectedGenome2);
+            vecPopulation.Remove(selectedGenome2);
 
             // For now age is not considered (implemented when picking out worst genome)
 
