@@ -11,9 +11,10 @@ public class GeneticData : MonoBehaviour
     public static int generation = 0; // current generation
     public static int intervalCount = 0;
     public static double shortestPlayTime = 100; 
+    public static CSVWriter csv;       
 
     void Start() {
-        Debug.Log(generation);
+        // Debug.Log(generation);
     }
 
     // GET METHODS
@@ -24,6 +25,7 @@ public class GeneticData : MonoBehaviour
     public double GetShortestPlayTime() { return shortestPlayTime; }
 
     public int GetIntervalCount() { return intervalCount; }
+    public CSVWriter GetCSVWriter() { return csv; }
 
     // SET METHODS
     public void SetGeneration(int gen) { generation = gen; }
@@ -33,4 +35,6 @@ public class GeneticData : MonoBehaviour
     public void SetShortestPlayTime(double time) { shortestPlayTime = time; } 
 
     public void SetIntervalCount(int count) { intervalCount = count; }
+
+    public void SetCSVWriter(CSVWriter c) { csv = c; }
 }

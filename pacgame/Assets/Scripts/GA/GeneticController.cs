@@ -70,7 +70,10 @@ public class GeneticController : MonoBehaviour
     
     // The player!
     public GameObject player;
-    public bool fitnessCalculated;
+    // public bool fitnessCalculated;
+
+    // Export data to .csv file
+    CSVWriter csv;
 
     void Awake()
     {
@@ -85,6 +88,15 @@ public class GeneticController : MonoBehaviour
         intervalCount = geneticData.GetIntervalCount();
 
         player = GameObject.FindGameObjectWithTag("Player");
+
+        if (generation < 1) {
+            csv = new CSVWriter();
+            geneticData.SetCSVWriter(csv);
+        }
+        else {
+            csv = geneticData.GetCSVWriter();
+        }
+         // once instantiated in geneticData, doesn't need to be resaved
     }
 
     void Start() {
@@ -109,9 +121,12 @@ public class GeneticController : MonoBehaviour
                 vecPopulation[i].prefab = generatedGhosts[i]; // WORKS
                     
             }
+            UpdateGenomeAge();
         }
-
-        UpdateGenomeAge(); // all genomes +1 in age, age defined by number of generations survived 
+        // all genomes +1 in age, age defined by number of generations survived
+        // in first generation: age gets updated after initializing the population
+        // in the following generations: age gets updated before recalculating fitness
+          // age starts at 1
 
         // If this is not the first generation, run Epoch
         if (generation > 1) {
@@ -320,11 +335,8 @@ public class GeneticController : MonoBehaviour
         // assigns fitness score to all members of the population
         for (int i = 0; i < vecPopulation.Count; i++) {
             double fitness = FitnessFunction(vecPopulation[i]);
-            Debug.Log("fitness");
-            Debug.Log(fitness);
             vecPopulation[i].fitScore = fitness;
-            Debug.Log("vecPop fitness");
-            Debug.Log(vecPopulation[i].fitScore);
+            vecPopulation[i].fitScoreOld = fitness;
         }
     }
 
@@ -349,6 +361,7 @@ public class GeneticController : MonoBehaviour
         // loop through population, reassign fitness scores
         for (int i = 0; i < vecPopulation.Count; i++) {
             double oldFitness = vecPopulation[i].fitScore;
+            // vecPopulation[i].fitScoreOld = oldFitness; // for CSVWriter
             vecPopulation[i].fitScore = (oldFitness - averageFitness) / (2 * standev);
         }
 
@@ -450,6 +463,8 @@ public class GeneticController : MonoBehaviour
         // increases ages of all population members by 1
         for (int i = 0; i < vecPopulation.Count; i++) {
             vecPopulation[i].age += 1;
+            Debug.Log("age");
+            Debug.Log(vecPopulation[i].age);
         }
     }
 
@@ -502,7 +517,8 @@ public class GeneticController : MonoBehaviour
             // Updated fitness will be used for selection
             ScaleFitnessScores(); 
 
-            // fitnessCalculated = true;
+            // fitnessCalculated = true; 
+            csv.WriteData(vecPopulation, generation);
 
             // Destroy prefabs on screen
             if (generatedGhosts.Count > 0 && prefabsCleared == false) {
@@ -570,6 +586,8 @@ public class GeneticController : MonoBehaviour
                 // Send to current genome, gain access to the ghost object on screen
                 vecPopulation[i].prefab = generatedGhosts[i];
             }
+
+            UpdateGenomeAge();
         // }
     }
 
