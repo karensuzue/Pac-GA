@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 // SAVED = Made static variable in GeneticData.cs, retain information after reloading scene
-public class GeneticController : MonoBehaviour
+public class GeneticSeedingController : MonoBehaviour
 {
     // Population:
     private List<Genome> vecPopulation = new List<Genome>(); // SAVE TO GENETICDATA
