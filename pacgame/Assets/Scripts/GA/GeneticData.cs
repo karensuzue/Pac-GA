@@ -8,9 +8,10 @@ public class GeneticData : MonoBehaviour
     // Static variables 
 
     public static List<Genome> vecPopulation = new List<Genome>();
+    public static List<Genome> seedPool = new List<Genome>();
     public static int generation = 0; // current generation
     public static int intervalCount = 0;
-    public static double shortestPlayTime = 100; 
+    public static double shortestPlayTime = 3000; 
     public static CSVWriter csv;       
 
     void Start() {
@@ -21,6 +22,7 @@ public class GeneticData : MonoBehaviour
     public int GetGeneration() { return generation; }
 
     public List<Genome> GetVecPopulation() { return vecPopulation; }
+    public List<Genome> GetSeedPool() { return seedPool; }
 
     public double GetShortestPlayTime() { return shortestPlayTime; }
 
@@ -31,6 +33,7 @@ public class GeneticData : MonoBehaviour
     public void SetGeneration(int gen) { generation = gen; }
 
     public void SetVecPopulation(List<Genome> pop) { vecPopulation = pop; }
+    public void SetSeedPool(List<Genome> pool) { seedPool = pool; }
 
     public void SetShortestPlayTime(double time) { shortestPlayTime = time; } 
 

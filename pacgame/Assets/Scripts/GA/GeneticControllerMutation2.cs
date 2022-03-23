@@ -1,14 +1,16 @@
+// Genetic Controller for increased mutation rate and removed population cap. NOT USED
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 // SAVED = Made static variable in GeneticData.cs, retain information after reloading scene
-public class GeneticSeedingController : MonoBehaviour
+public class GeneticControllerMutation2 : MonoBehaviour
 {
     // Population:
     private List<Genome> vecPopulation = new List<Genome>(); // SAVE TO GENETICDATA
-    private int popSize = 4; // population size
+    private int popSize = 4; // INITIAL population size
     
     // Chromosome Representation:
     // 0 0 | 0 0 0
@@ -19,7 +21,7 @@ public class GeneticSeedingController : MonoBehaviour
     private int speedIndexStart = 2; // speed starts at index 2 of the Genome bit list
     
     // Mating Rates:
-    private float mutationRate = 0.001f;
+    private float mutationRate = 0.7f; // Mutation rate matches crossover rate
     private float crossoverRate = 0.7f;
 
     // Fitness:
@@ -356,7 +358,7 @@ public class GeneticSeedingController : MonoBehaviour
         }
         Debug.Log("runningtotal");
         Debug.Log(runningTotal);
-        double variance = runningTotal / popSize;
+        double variance = runningTotal / vecPopulation.Count;
         double standev = Math.Sqrt(variance);
 
         Debug.Log("standev");
@@ -515,7 +517,7 @@ public class GeneticSeedingController : MonoBehaviour
         // if (gameRunning == false) { // if game is at "Play Again?" screen
             // Update population fitness
             CalculatePopulationFitness(); 
-            // Update best, worst, total, and average fitness scores
+            // Update best, worst, total, and average fitness scores, genomes, and their indices
             CalcBestWorstAvTotFitness(); 
             // Scale fitness scores, also update BWTA scores in the process
             // Updated fitness will be used for selection
@@ -531,7 +533,10 @@ public class GeneticSeedingController : MonoBehaviour
             }
 
             // Create new population
-            List<Genome> newPop = new List<Genome>();
+            // Instead of selecting and adding 4 individuals into the new population,
+            // we add onto the previous population and remove one individual
+            // This effectively removes the population cap
+            List<Genome> newPop = vecPopulation;
 
             // Crossover time! Produce 2 children genomes
             Genome mom = RouletteWheelSelection();
@@ -548,36 +553,20 @@ public class GeneticSeedingController : MonoBehaviour
             newPop.Add(baby1); // Genome 1
             newPop.Add(baby2); // Genome 2
 
-            /*
-            // Add fittest Genome
-            newPop.Add(fittestGenome); // Genome 3
-            vecPopulation.RemoveAt(fittestGenomeIndex); // can now remove as RWS needs the original, unmodified population
-            
-            // Add second fittest Genome
-            int secondfittestIndex = BestGenomeFinder(); // Genome 4
-            newPop.Add(vecPopulation[secondfittestIndex]);
-            */
+            // Instead of selecting genomes to place into the next generation, we remove one
+            // We use a system based on age of the genome
+            // If the genome is too young, we can't remove it
+            // This helps preserve innovation/diversity
+            newPop.Remove(worstGenome);
 
-            // Probabilistically select 2 members to add to the next generation based on their fitness
-            // Probability (1-r) * p, r being the fraction of the population to be replaced by
-            // Crossover (0.5) and p being the number of hypotheses to be included in the population.
-            Genome selectedGenome1 = RouletteWheelSelection();
-            newPop.Add(selectedGenome1);
-            vecPopulation.Remove(selectedGenome1);
 
-            Genome selectedGenome2 = RouletteWheelSelection();
-            newPop.Add(selectedGenome2);
-            vecPopulation.Remove(selectedGenome2);
-
-            // For now age is not considered (implemented when picking out worst genome)
-
-            // Copy current population to new population
+            // Replace old population with new population
             vecPopulation = newPop;
 
             // Incrementing generation is done in Start
 
             // Decode, place information in respective Genome objects
-            for (int i = 0; i < popSize; i++) { // Go through all genomes in population
+            for (int i = 0; i < vecPopulation.Count; i++) { // Go through all genomes in population
                 List<int> decoded = Decode(vecPopulation[i].vecBits); // Decode, returns [color, speed]
                 vecPopulation[i].vecDecoded = decoded; // Send to the current genome what's decoded
                 vecPopulation[i].color = decoded[0]; // Send to current genome it's decoded color
@@ -587,7 +576,7 @@ public class GeneticSeedingController : MonoBehaviour
                 InstantiateGhostPrefab(vecPopulation[i].vecDecoded);
                 prefabsCleared = false; // new prefabs instantiated, so false
 
-                // Send to current genome, gain access to the ghost object on screen
+                // Send to current genome, attach it to the ghost object on screen
                 vecPopulation[i].prefab = generatedGhosts[i];
             }
 

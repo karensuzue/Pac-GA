@@ -73,7 +73,10 @@ public class HUDController : MonoBehaviour
         // For scene "Game GA"
         SceneManager.LoadScene("Game GA");
 
-        // For scene "Game GA Improved"
-        // SceneManager.LoadScene("Game GA Improved");
+        // For scene "Game GA Increased Mutation"
+        // SceneManager.LoadScene("Game GA Increased Mutation");
+
+        // For scene "Game GA Seeding"
+        // SceneManager.LoadScene("Game GA Seeding");
     }
 }

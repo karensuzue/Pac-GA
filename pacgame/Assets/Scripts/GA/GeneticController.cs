@@ -137,13 +137,14 @@ public class GeneticController : MonoBehaviour
         intervalCount = 0; // reset intervalCount. Has to be done after fitness is calculated to prevent NaN
         // fitnessCalculated = false;
 
+        /*
         for (int i = 0; i < vecPopulation.Count; i++) {
             // FOR DEBUG: Set enemy controller fitness = genome fitness to observe
             EnemyController2 enemyCtrl = vecPopulation[i].prefab.GetComponent<EnemyController2>();
             enemyCtrl.fitness = vecPopulation[i].fitScore;
             Debug.Log("enemyctrl fitness");
             Debug.Log(enemyCtrl.fitness);
-        }
+        }*/
 
 
         geneticData.SetVecPopulation(vecPopulation); // any changes to vecPopulation has to be resaved to GeneticData   
@@ -309,28 +310,89 @@ public class GeneticController : MonoBehaviour
         
         if (gen.speed == 0) { // if ghost stays still, this prevents player from completing the game
             fitness -= 30; // remove this completely
-        }
-
-        if (gen.playerCollide == true) { // if ghost collides with player
-            fitness += 20; // encourages more aggression
-            if (gameManager.endTime < 5.5) { // if this ghost kills player too quickly, deduct
-                fitness -= 30; // encourages more passivity
-
-            }
+            Debug.Log("deduct 30");
         }
 
         if (gameManager.state == GameManager.GameStates.win) {
             if (gameManager.endTime < geneticData.GetShortestPlayTime()) { // if player has a new time high score, deduct points for all ghosts
-                fitness -= 5; // more aggression
+                fitness -= 30; // more aggression
+                Debug.Log("deduct 30");
+            }
+        }
+
+        if (gen.playerCollide == true) { // if ghost collides with player
+            fitness += 20; // encourages more aggression
+            Debug.Log("added 20");
+            if (gameManager.endTime < 5.5) { // if this ghost kills player too quickly, deduct
+                fitness -= 30; // encourages more passivity
+                Debug.Log("deduct 30");
+
             }
         }
         
         // maximum distance from player is about 40.361 (two opposite diagonal corners of the map)
-        // maximum fitness deducted is about 5.361
-        if (average > 35) { // if average distance from playe is greater than threshold
-            fitness -= (average - 35); // the further the distance, the greater the deduction
-            // fitness -= Math.Pow(average - 35, 2); // aggressively encourages ghost to move towards player more
+        // maximum fitness deducted is about 20.361
+        if (average > 20) { // if average distance from playe is greater than threshold
+            fitness -= (average - 20); // the further the distance, the greater the deduction
+            // fitness -= Math.Pow(average - 20, 2); // aggressively encourages ghost to move towards player more
+            Debug.Log("deduct distance greater than 20");
         }
+
+        return fitness;
+    }
+
+    private double FitnessFunction2(Genome gen) {
+        double fitness = 0;
+        Debug.Log("total distance from player");
+        Debug.Log(gen.totalDistancePlayer);
+        double average = gen.totalDistancePlayer / intervalCount;
+        Debug.Log("average distance");
+        Debug.Log(average);
+
+        if (gen.speed == 0) { // if ghost stays still, this prevents player from completing the game
+            fitness -= 300; // remove this completely
+        }
+
+        // 3 objectives:
+        // 1. Kill player (min = 0, max = 10, weight = 0.25)
+        // 2. Only kill player after 6.5 seconds into the game (min = 0, max = 1, weight = 0.25) REMOVED
+        // 3. Average distance maintained throughout the game is larger than threshold (20)
+            // (min = -20.361, max = 19, weight = 0.5) OLD
+            // (min = , max = , weight = 1)
+
+        double obj1 = 0;
+        // double obj2 = 0;
+        double obj3 = 0;
+
+        double obj1Min = 0;
+        double obj1Max = 10;
+        if (gen.playerCollide == true) { // if ghost collides with player
+            obj1 += 10; // 0 = not collide, 1 = collide
+            if (gameManager.endTime <= 6) { // if this ghost kills player too quickly, threshold is experimental
+                obj1 -= (10 - gameManager.endTime);
+            }
+        }
+
+        /*
+        // maximum distance from player is about 40.361 (from top and bottom diagonal corners)
+        // maximum difference from threshold is about 20.361
+        // if average distance from playe is greater than threshold, obj3 becomes negative
+        obj3 = -(average - 20);
+        double obj3Max = 19;
+        double obj3Min = -20.361;
+        */
+
+        // Quadratic-based approach to objective 3
+        // y = -(x - 8.5)(x - 20)
+        // 8.5 and 20 are thresholds, ideally enemies have to stay between this range
+        // Vertex (highest score/max) = (14.25, 33.063)
+        // 11.5 can be said to be the ideal distance
+        // End points: (0, -170) and (40.361, -648.721821) (the latter's y being min)
+        obj3 = -1 * (average - 8.5) * (average - 20);
+        double obj3Min = -648.722;
+        double obj3Max = 56.25;
+
+        fitness += ((obj1 - obj1Min) / (obj1Max - obj1Min)) + ((obj3 - obj3Min) / (obj3Max - obj3Min));
 
         return fitness;
     }
@@ -338,13 +400,14 @@ public class GeneticController : MonoBehaviour
     private void CalculatePopulationFitness() { // WORKS
         // assigns fitness score to all members of the population
         for (int i = 0; i < vecPopulation.Count; i++) {
-            double fitness = FitnessFunction(vecPopulation[i]);
+            // double fitness = FitnessFunction(vecPopulation[i]);
+            double fitness = FitnessFunction2(vecPopulation[i]);
             vecPopulation[i].fitScore = fitness;
             vecPopulation[i].fitScoreOld = fitness;
         }
     }
 
-    private void ScaleFitnessScores() {
+    private async void ScaleFitnessScores() {
         // scale to prevent quick convergence and ensure population diversity 
         // Sigma scaling method
         // directly changes the fitness scores of each member of the population
@@ -354,21 +417,25 @@ public class GeneticController : MonoBehaviour
         for (int i = 0; i < vecPopulation.Count; i++) {
             runningTotal += Math.Pow((vecPopulation[i].fitScore - averageFitness), 2);
         }
-        Debug.Log("runningtotal");
-        Debug.Log(runningTotal);
+
         double variance = runningTotal / popSize;
         double standev = Math.Sqrt(variance);
 
         Debug.Log("standev");
         Debug.Log(standev);
-
-        // loop through population, reassign fitness scores
-        for (int i = 0; i < vecPopulation.Count; i++) {
-            double oldFitness = vecPopulation[i].fitScore;
-            // vecPopulation[i].fitScoreOld = oldFitness; // for CSVWriter
-            vecPopulation[i].fitScore = (oldFitness - averageFitness) / (2 * standev);
+        if (standev == 0) {
+            for (int i = 0; i < vecPopulation.Count; i++) {
+                vecPopulation[i].fitScore = 0;
+            }
         }
-
+        else {
+            // loop through population, reassign fitness scores
+            for (int i = 0; i < vecPopulation.Count; i++) {
+                double oldFitness = vecPopulation[i].fitScore;
+                // vecPopulation[i].fitScoreOld = oldFitness; // for CSVWriter
+                vecPopulation[i].fitScore = (oldFitness - averageFitness) / (2 * standev);
+            }
+        }
         // recalculate best, worst, average, total fitness scores
         CalcBestWorstAvTotFitness();
     }
@@ -511,7 +578,7 @@ public class GeneticController : MonoBehaviour
 
 
     // PUBLIC METHODS 
-    public void Epoch() {
+    public async void Epoch() {
         // if (gameRunning == false) { // if game is at "Play Again?" screen
             // Update population fitness
             CalculatePopulationFitness(); 
@@ -519,7 +586,7 @@ public class GeneticController : MonoBehaviour
             CalcBestWorstAvTotFitness(); 
             // Scale fitness scores, also update BWTA scores in the process
             // Updated fitness will be used for selection
-            ScaleFitnessScores(); 
+            ScaleFitnessScores();
 
             // fitnessCalculated = true; 
             csv.WriteData(vecPopulation, generation);
@@ -548,7 +615,7 @@ public class GeneticController : MonoBehaviour
             newPop.Add(baby1); // Genome 1
             newPop.Add(baby2); // Genome 2
 
-            /*
+            // ELITISM
             // Add fittest Genome
             newPop.Add(fittestGenome); // Genome 3
             vecPopulation.RemoveAt(fittestGenomeIndex); // can now remove as RWS needs the original, unmodified population
@@ -556,22 +623,22 @@ public class GeneticController : MonoBehaviour
             // Add second fittest Genome
             int secondfittestIndex = BestGenomeFinder(); // Genome 4
             newPop.Add(vecPopulation[secondfittestIndex]);
-            */
+            
 
             // Probabilistically select 2 members to add to the next generation based on their fitness
             // Probability (1-r) * p, r being the fraction of the population to be replaced by
             // Crossover (0.5) and p being the number of hypotheses to be included in the population.
-            Genome selectedGenome1 = RouletteWheelSelection();
-            newPop.Add(selectedGenome1);
-            vecPopulation.Remove(selectedGenome1);
+            // Genome selectedGenome1 = RouletteWheelSelection();
+            // newPop.Add(selectedGenome1);
+            // vecPopulation.Remove(selectedGenome1);
 
-            Genome selectedGenome2 = RouletteWheelSelection();
-            newPop.Add(selectedGenome2);
-            vecPopulation.Remove(selectedGenome2);
+            // Genome selectedGenome2 = RouletteWheelSelection();
+            // newPop.Add(selectedGenome2);
+            // vecPopulation.Remove(selectedGenome2);
 
             // For now age is not considered (implemented when picking out worst genome)
 
-            // Copy current population to new population
+            // Replace old population with new population
             vecPopulation = newPop;
 
             // Incrementing generation is done in Start
@@ -589,6 +656,9 @@ public class GeneticController : MonoBehaviour
 
                 // Send to current genome, gain access to the ghost object on screen
                 vecPopulation[i].prefab = generatedGhosts[i];
+
+                // Set totalDistancePlayer back to 0
+                vecPopulation[i].totalDistancePlayer = 0.0;
             }
 
             UpdateGenomeAge();
