@@ -343,27 +343,24 @@ public class GeneticController : MonoBehaviour
 
     private double FitnessFunction2(Genome gen) {
         double fitness = 0;
-        Debug.Log("total distance from player");
-        Debug.Log(gen.totalDistancePlayer);
         double average = gen.totalDistancePlayer / intervalCount;
-        Debug.Log("average distance");
-        Debug.Log(average);
 
         if (gen.speed == 0) { // if ghost stays still, this prevents player from completing the game
             fitness -= 300; // remove this completely
         }
 
         // 3 objectives:
-        // 1. Kill player (min = 0, max = 10, weight = 0.25)
-        // 2. Only kill player after 6.5 seconds into the game (min = 0, max = 1, weight = 0.25) REMOVED
+        // 1. Kill player, but only after 6 seconds into the game (min = 0, max = 1, weight = 0.25)
+        // 2. If player wins, the genome with closest average distance gets an extra 10 points
         // 3. Average distance maintained throughout the game is larger than threshold (20)
             // (min = -20.361, max = 19, weight = 0.5) OLD
             // (min = , max = , weight = 1)
 
         double obj1 = 0;
-        // double obj2 = 0;
+        double obj2 = 0;
         double obj3 = 0;
 
+        // Objective 1
         double obj1Min = 0;
         double obj1Max = 10;
         if (gen.playerCollide == true) { // if ghost collides with player
@@ -373,32 +370,84 @@ public class GeneticController : MonoBehaviour
             }
         }
 
-        /*
-        // maximum distance from player is about 40.361 (from top and bottom diagonal corners)
-        // maximum difference from threshold is about 20.361
+        // Objective 2
+        // Checking for closest distance is done in CalculatePopulationFitness() 
+        double obj2Min = 0;
+        double obj2Max = 10;
+        if (gameManager.state == GameManager.GameStates.win) {
+            if (gen.closestToPlayer == true) {
+                obj2 += 10;
+            }
+        }
+
+        // Objective 3
+        // Maximum distance from player is about 40.361 (from top and bottom diagonal corners)
+        // Maximum difference from threshold 20 is about 20.361
+
+        /* OLD 
         // if average distance from playe is greater than threshold, obj3 becomes negative
         obj3 = -(average - 20);
         double obj3Max = 19;
         double obj3Min = -20.361;
         */
 
-        // Quadratic-based approach to objective 3
-        // y = -(x - 8.5)(x - 20)
-        // 8.5 and 20 are thresholds, ideally enemies have to stay between this range
-        // Vertex (highest score/max) = (14.25, 33.063)
-        // 11.5 can be said to be the ideal distance
-        // End points: (0, -170) and (40.361, -648.721821) (the latter's y being min)
+        /* OLD
         obj3 = -1 * (average - 8.5) * (average - 20);
         double obj3Min = -648.722;
-        double obj3Max = 56.25;
+        double obj3Max = 33.063;
+        */
 
-        fitness += ((obj1 - obj1Min) / (obj1Max - obj1Min)) + ((obj3 - obj3Min) / (obj3Max - obj3Min));
+        // Quadratic-based approach to objective 3
+        // y = -(x - 8)(x - 20) for x < 8.901, x > 19.099
+        // y = 10 for 8.901 < x < 19.099
+        // 8 and 20 are thresholds, ideally enemies have to stay between this range
+        // Vertex (highest score/max) = (14, 36)
+        // Cut off parabola at y = 10 as there is no point of increasing the score
+            // Also reduces bias towards a certain number, gives a wider range of distances
+            // to consider for a player's skill level
+        // End points: (0, -160) and (40.361, -658.902) (the latter's y being min)
+
+        /*
+        double obj3Min = -658.902;
+        double obj3Max = 10;
+        if (average < 8.901 || average > 19.099) {
+            obj3 = -1 * (average - 8) * (average - 20);
+        }
+
+        else if (average > 8.901 && average < 19.099) {
+            obj3 = 10;
+        }*/
+
+        double obj3Min = -658.902;
+        double obj3Max = 36;
+        obj3 = -1 * (average - 8) * (average - 20);
+
+        fitness += ((obj1 - obj1Min) / (obj1Max - obj1Min))
+            + 1.5 * ((obj2 - obj2Min) / (obj2Max - obj2Min))
+            + ((obj3 - obj3Min) / (obj3Max - obj3Min));
 
         return fitness;
     }
 
     private void CalculatePopulationFitness() { // WORKS
         // assigns fitness score to all members of the population
+        // also checks for the genome closest to the player on average
+
+        int bestIndex = -1; // index of the genome closest to the player
+        double bestAvg = 8000; // best (smallest) average distance from player
+        for (int i = 0; i < vecPopulation.Count; i++) {
+            Genome current = vecPopulation[i];
+            double average = current.totalDistancePlayer / intervalCount;
+            if (average < bestAvg) {
+                bestAvg = average;
+                bestIndex = i;
+            }
+        }
+
+        if (bestIndex != -1) {
+            vecPopulation[bestIndex].closestToPlayer = true;
+        }
+        
         for (int i = 0; i < vecPopulation.Count; i++) {
             // double fitness = FitnessFunction(vecPopulation[i]);
             double fitness = FitnessFunction2(vecPopulation[i]);

@@ -17,6 +17,7 @@ public class Genome
 
     public double totalDistancePlayer = 0.0; // total distance from player, used to calculate average
     public bool playerCollide = false;
+    public bool closestToPlayer = false; // for fitness function
 
     public GameObject prefab;
 
