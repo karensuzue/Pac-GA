@@ -40,7 +40,7 @@ public class EnemyController : MonoBehaviour
     public GameObject startingNode; // The ghost's chosen starting node, set in Awake
     public bool leaveHome = false; // Bool set to true only when ghost is leaving starting nodes/spawn area
 
-    public GameObject player; // Reference to player GameObject in Hierarchy
+    public GameObject player; // Reference to player GameObject instance in Hierarchy
     private MovementController movementController; // MovementController class of ghost GameObject
 
     public bool playerCaught; // True if player is caught by ghost
@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour
     {
         // Obtain GameManager class from its respective GameObject
         gameManager = gameManagerObj.GetComponent<GameManager>(); 
-        // Find the player's GameObject in the hierarchy
+        // Find the player's GameObject instance
         player = GameObject.FindGameObjectWithTag("Player"); 
         // MovementController class attached to ghost GameObject
         movementController = gameObject.GetComponent<MovementController>(); 
@@ -157,7 +157,7 @@ public class EnemyController : MonoBehaviour
                     targetPosition.y -= 2;
                 }
 
-                // Find red ghost GameObject in Hierarchy
+                // Find red ghost GameObject instance
                 GameObject redGhost = GameObject.FindGameObjectWithTag("RedGhost"); 
                 float xDistance = targetPosition.x - redGhost.transform.position.x;
                 float yDistance = targetPosition.y - redGhost.transform.position.y;

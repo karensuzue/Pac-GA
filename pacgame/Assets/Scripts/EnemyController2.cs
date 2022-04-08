@@ -22,12 +22,12 @@ public class EnemyController2 : MonoBehaviour
 
     // The ghost's chosen starting node
     public GameObject startingNode; // Set in inspector 
-    // Reference to player GameObject in Hierarchy. 
+    // Reference to player GameObject instance 
     public GameObject player;
     // MovementController class attached to ghost GameObject
     private MovementController movementController;
-    public bool playerCaught; // True if player is caught by ghost. 
-    public GameObject gameManagerObj; // GameManager GameObject object.
+    public bool playerCaught; // True if player is caught by ghost
+    public GameObject gameManagerObj; // GameManager GameObject object
     public GameManager gameManager; // GameManager class
    
     /** 
@@ -41,7 +41,7 @@ public class EnemyController2 : MonoBehaviour
         gameManagerObj = GameObject.FindGameObjectWithTag("GameManager");
         gameManager = gameManagerObj.GetComponent<GameManager>();
 
-        // Find the player's GameObject in the hierarchy
+        // Find the player's GameObject instance
         player = GameObject.FindGameObjectWithTag("Player");
          // MovementController class attached to ghost GameObject
         movementController = gameObject.GetComponent<MovementController>();
@@ -111,7 +111,7 @@ public class EnemyController2 : MonoBehaviour
                 targetPosition.y -= 2;
             }
 
-            // Find red ghost GameObject in Hierarchy
+            // Find special red ghost GameObject instance
             GameObject redGhost = GameObject.FindGameObjectWithTag("InvisibleRedGhost");
             float xDistance = targetPosition.x - redGhost.transform.position.x;
             float yDistance = targetPosition.y - redGhost.transform.position.y;

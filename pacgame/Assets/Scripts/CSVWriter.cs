@@ -18,16 +18,16 @@ public class CSVWriter
         filename = Application.dataPath + "/data.csv";
         tw = new StreamWriter(filename, false); // NOTE: APPEND SET TO FALSE. 
             // Even though all CSVWriter objects write to the same path, append=false will lead to
-            // data being written over.   
-        tw.WriteLine("Generation, Color, Speed, Fit, ScaledFit, Age"); // Headers
+            // data being written over. It is thus necessary to use the same CSVWriter object 
+            // throughout a training session. 
+        tw.WriteLine("Generation, Color, Speed, Fit, ScaledFit, Age"); // Headers for table columns
         tw.Close();
     }
 
     /**
-     * Appends data
+     * Appends data to .csv file
      * @param genomeList Current population 
      * @param generation Current generation
-     * @return The current score. 
     */
     public void WriteData(List<Genome> genomeList, int generation) {
         tw = new StreamWriter(filename, true); // NOTE: APPEND SET TO TRUE 
