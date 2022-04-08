@@ -2,7 +2,7 @@
 Senior IS at the College of Wooster. Pac-Man inspired game that explores using GA for difficulty adjustment.
 
 ## Setup
-This project is built using Unity Version 2020.3.22f1. 
+This project is built using Unity Version 2020.3.22f1. Simply import this project.
 
 ## Running
 Two versions of the game are available: a non-GA version, and a GA version.
