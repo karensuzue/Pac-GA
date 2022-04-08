@@ -110,7 +110,6 @@ public class GameManager : MonoBehaviour
             int pDifference = Math.Abs(pelletCount - pCount);
             int eDifference = Math.Abs(energizerCount - eCount);
         
-            //int score = currentScore + pDifference + (eDifference * 10);
             score = currentScore + pDifference + (eDifference * 10);
         }
         return score;

@@ -8,13 +8,13 @@ using UnityEngine;
 */
 public class NodeController : MonoBehaviour
 {
-    // Keep track of nodes in four cardinal directions
+    // Keep track of nearby nodes in four cardinal directions
     public bool left = false; // false if node doesn't exist
     public bool right = false;
     public bool up = false;
     public bool down = false;
 
-    // References to node GameObjects are stored here
+    // References to nearby node GameObjects are stored here
     public GameObject nodeLeft; 
     public GameObject nodeRight;
     public GameObject nodeUp;
@@ -100,8 +100,8 @@ public class NodeController : MonoBehaviour
 
     /**
      * Retrieves next node to move to.
-     * @param direction A string holding target direction
-     * @return A nearby node GameObject
+     * @param direction A string holding target direction.
+     * @return A nearby node GameObject.
     */
     public GameObject GetNextNode(string direction)
     {

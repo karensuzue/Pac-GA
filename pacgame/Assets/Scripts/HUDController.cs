@@ -17,7 +17,7 @@ public class HUDController : MonoBehaviour
 
     public int currentScore; // Integer variable holding the current score
 
-    public GameObject gameManagerObj; // Reference to the GameManager GameObject object in Hierarchy
+    public GameObject gameManagerObj; // Reference to the GameManager GameObject instance in Hierarchy
     public GameManager gameManager; // GameManager class obtained from the GameManager GameObject object
 
     public GameManager.GameStates state; // The current state of the game (win, lose, etc.)
@@ -60,12 +60,12 @@ public class HUDController : MonoBehaviour
         }
         else // If game is still ongoing, has not ended 
         {
-            timerText.text = "Time: " + gameManager.endTime.ToString(); // Update text for time. 
+            timerText.text = "Time: " + gameManager.endTime.ToString(); // Update text for time 
         }
     }
 
     /**
-     * Method for reloading scenes. Used for 'Play Again' button in pop-up.
+     * Method for reloading scenes. Called when clicking 'Play Again' button in pop-up.
      * Uncomment depending on scene/game mode chosen.
      * Two game modes are available: "Game" and "Game GA".
     */

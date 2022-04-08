@@ -33,20 +33,20 @@ public class GeneticController : MonoBehaviour
     private float crossoverRate = 0.7f;
 
     // Fitness:
-    private double bestFitness; // best fitness score
+    private double bestFitness; // Best fitness score
     private double worstFitness; 
-    private double totalFitness; // total fitness score of the current population
+    private double totalFitness; // Total fitness score of the current population
     private double averageFitness;
-    private Genome fittestGenome; // fittest genome of the population
+    private Genome fittestGenome; // Fittest genome object of the population
     private Genome worstGenome; 
-    private int fittestGenomeIndex; // index to access the fittest genome in the population
+    private int fittestGenomeIndex; // Index to access the fittest genome object in the population
     private int worstGenomeIndex; 
     
     // Game and Prefabs:
-    private int generation; // current generation, increases each time Start() is run
-    private bool gameRunning; // true if game is currently running
-    private List<GameObject> generatedGhosts = new List<GameObject>(); // ghosts instantiated on screen
-    bool prefabsCleared; // true if prefabs are all cleared
+    private int generation; // Current generation, increases each time Start() is run
+    private bool gameRunning; // True if game is currently running
+    private List<GameObject> generatedGhosts = new List<GameObject>(); // Ghosts instantiated on screen
+    bool prefabsCleared; // True if prefabs are all cleared
 
     // Prefabs to be instantiated on screen
     // 00 or 0 = Red, 01 or 1 = Pink, 10 or 2 = Blue, 11 or 3 = Orange
@@ -64,7 +64,7 @@ public class GeneticController : MonoBehaviour
     public GameObject orangeOg;
 
     // GameManager instance:
-    public GameObject gameManagerObj; // drag and drop in Inspector
+    public GameObject gameManagerObj; // Drop in Inspector
     public GameManager gameManager;
 
     // GeneticData, where information across runs get saved:
@@ -72,12 +72,12 @@ public class GeneticController : MonoBehaviour
     public GeneticData geneticData;
 
     // Timer-related:
-    private double nextUpdate = 0.0; // update "interval" in seconds, used for UpdateEverySecond
-    public int intervalCount = 0; // number of 1-second intervals, for calculating average. 
+    private double nextUpdate = 0.0; // Update "interval" in seconds, used for UpdateEverySecond
+    public int intervalCount = 0; // Number of 1-second intervals, for calculating average. 
             // Similar to nextUpdate but stops updating once playthrough ends. 
     
     // Random instance:
-    private static System.Random random = new System.Random(); // helps generate random numbers
+    private static System.Random random = new System.Random(); // Helps generate random numbers
 
     // The player:
     public GameObject player;
@@ -229,7 +229,7 @@ public class GeneticController : MonoBehaviour
     */ 
 
     /**
-     * Initializes population with random genomes 
+     * Initializes population with random genomes.
     */ 
     private void CreateStartingPopulation() {
         vecPopulation = new List<Genome>();
@@ -240,9 +240,9 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Decode genome bit list
-     * @param bits List of bits, genome representation
-     * @return A list of size 2 containing decoded genes (color and speed)
+     * Decode genome bit list.
+     * @param bits List of bits, genome representation.
+     * @return A list of size 2 containing decoded genes (color and speed) in int form.
     */ 
     private List<int> Decode(List<int> bits) { 
         List<int> decodedGenome = new List<int>();
@@ -267,7 +267,7 @@ public class GeneticController : MonoBehaviour
 
     /**
      * Instantiate ghost GameObjects on screen.
-     * @param decodedChrom List containing decoded genes for a single Genome
+     * @param decodedChrom List containing decoded genes for a single Genome.
     */ 
     private void InstantiateGhostPrefab(List<int> decodedChrom) {
         // 00 or 0 = Red, 01 or 1 = Pink, 10 or 2 = Blue, 11 or 3 = Orange
@@ -322,8 +322,8 @@ public class GeneticController : MonoBehaviour
 
     /**
      * Calculates fitness score for one genome. 
-     * @param gen Genome object
-     * @return The fitness score
+     * @param gen Genome object.
+     * @return The fitness score.
     */ 
     private double FitnessFunction(Genome gen) {
         double fitness = 0;
@@ -338,7 +338,7 @@ public class GeneticController : MonoBehaviour
         // 1. Kill player, but only after 6 seconds into the game (min = 0, max = 10, weight = 1)
         // 2. If player wins, the genome with closest average distance gets an extra 10 points
             // (min = 0, max = 10, weight = 1.5)
-        // 3. Average distance maintained throughout the game is larger than threshold (20)
+        // 3. Average distance maintained throughout the game is larger than thresholds
             // (min = -658.902, max = 36, weight = 1)
 
         double obj1 = 0;
@@ -387,8 +387,8 @@ public class GeneticController : MonoBehaviour
     
     
     /**
-     * Calculates fitness scores for entire population
-     * Also checks for genome closest to player on average
+     * Calculates fitness scores for entire population.
+     * Also checks for genome closest to player on average.
     */ 
     private void CalculatePopulationFitness() {
         int bestIndex = -1; // Index of the genome closest to the player
@@ -416,8 +416,8 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Sigma scaling to prevent quick convergence
-     * Directly changes the fitness scores of each member of the population
+     * Sigma scaling to prevent quick convergence.
+     * Directly changes the fitness scores of each member of the population.
     */
     private void ScaleFitnessScores() {
         // Calculate the standard deviation
@@ -446,7 +446,7 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Calculate best, worst, average, total fitness scores
+     * Calculate best, worst, average, total fitness scores.
     */
     private void CalcBestWorstAvTotFitness() {
         fittestGenomeIndex = BestGenomeFinder(); // index of the fittest genome
@@ -469,11 +469,11 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Roulette wheel selection
-     * Select genes for mating purposes
-     * Those with higher fitness have a higher change of being selected
-     * Doesn't guarantee that the best is selected, should be used with elitism
-     * @return Selected genome
+     * Roulette wheel selection.
+     * Select genes for mating purposes.
+     * Those with higher fitness have a higher change of being selected.
+     * Doesn't guarantee that the best is selected, should be used with elitism.
+     * @return Selected genome.
     */ 
     private Genome RouletteWheelSelection() {
         double slice = random.NextDouble() * (totalFitness); 
@@ -494,8 +494,8 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Finds the best genome, used for elitism
-     * returns The index of the best genome in the population list
+     * Finds the best genome, used for elitism.
+     * returns The index of the best genome in the population list.
     */ 
     private int BestGenomeFinder() {
         int bestGenomeIndex = 0;
@@ -508,8 +508,8 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Finds the worst genome
-     * returns The index of the worst genome in the population list
+     * Finds the worst genome.
+     * returns The index of the worst genome in the population list.
     */ 
     private int WorstGenomeFinder() {
         int worstIndex = 0;
@@ -535,8 +535,8 @@ public class GeneticController : MonoBehaviour
     }
 
     /**
-     * Mutation operator
-     * @param genomeBits List of bits for genome representation
+     * Mutation operator.
+     * @param genomeBits List of bits for genome representation.
     */ 
     private void Mutate(ref List<int> genomeBits) {
         for (int i = 0; i < chromLength; i++) {
@@ -549,11 +549,11 @@ public class GeneticController : MonoBehaviour
     }
     
     /**
-     * Crossover operator
-     * @param mom List of bits for parent genome
-     * @param dad List of bits for parent genome
-     * @param child1 List of bits for child genome 
-     * @param child2 List of bits for child genome 
+     * Crossover operator.
+     * @param mom List of bits for parent genome.
+     * @param dad List of bits for parent genome.
+     * @param child1 List of bits for child genome.
+     * @param child2 List of bits for child genome.
     */ 
     private void Crossover(ref List<int> mom, ref List<int> dad, ref List<int> child1, ref List<int> child2) {
         if (((float)random.NextDouble() > crossoverRate) || (mom == dad)) {
@@ -588,7 +588,7 @@ public class GeneticController : MonoBehaviour
     */
     
     /**
-     * Epoch loop, performs evolutionary processes
+     * Epoch loop, performs evolutionary processes.
     */ 
     public void Epoch() {
         // Update population fitness

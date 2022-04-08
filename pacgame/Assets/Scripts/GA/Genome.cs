@@ -28,16 +28,16 @@ public class Genome
     public bool playerCollide = false; 
     public bool closestToPlayer = false; // For fitness function
 
-    // GameObject instance associated with the genome
+    // GameObject instance instantiated from information contained within the genome
     public GameObject prefab;
 
     /**
-     * Constructor, initialize Genome with random binary digits
+     * Constructor, initialize Genome with random binary digits.
      * 00 = Red, 01 = Pink, 10 = Blue, 11 = Orange
-     * @param num_bits Number of bits per genome
-     * @param randomInstance Random generator
+     * @param num_bits Number of bits per genome.
+     * @param randomInstance Random generator.
     */
-    public Genome(int num_bits, System.Random randomInstance) { // WORKS
+    public Genome(int num_bits, System.Random randomInstance) {
         fitScore = 0;
         for (int i = 0; i < num_bits; i++) { // randomize binary digits 
             int bit = randomInstance.Next(2);
@@ -46,7 +46,7 @@ public class Genome
     }
 
     /**
-     * Constructor 2, initializes Genome
+     * Constructor 2, initializes Genome.
     */
     public Genome() {
         fitScore = 0;

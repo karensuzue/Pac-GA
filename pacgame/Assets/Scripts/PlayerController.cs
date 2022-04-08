@@ -7,7 +7,7 @@ using UnityEngine;
 */
 public class PlayerController : MonoBehaviour
 {
-    private MovementController moveController; // MovementController class attached
+    private MovementController moveController; // MovementController class attached to player instance
     public string nextDirection; // next immediate direction
 
     /**

@@ -16,12 +16,12 @@ public class MovementController : MonoBehaviour
 
     public bool isGhost = false; // true if character is ghost/enemy type
 
-    // NodeController class attached to node GameObject instance. 
+    // NodeController class attached to node GameObjects. 
     private NodeController nodeController; 
 
     /** 
      * FixedUpdate is called at a fixed interval independent of frame rate. 
-     * Handles movement
+     * Handles movement.
     */
     void FixedUpdate()
     {
@@ -72,8 +72,8 @@ public class MovementController : MonoBehaviour
     }
 
     /**
-     * Set next direction
-     * @param direction A string holding target direction
+     * Set next direction.
+     * @param direction A string holding target direction.
     */
     public void SetDirection(string direction)
     {
