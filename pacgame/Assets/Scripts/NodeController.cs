@@ -2,39 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * The NodeController class contains information for a single node GameObject on the maze.
+ * Helps keep track of valid paths on the map, which are formed from a collection of nodes
+*/
 public class NodeController : MonoBehaviour
 {
-    public bool left = false; //switch all to priv after done with debug 
+    // Keep track of nodes in four cardinal directions
+    public bool left = false; // false if node doesn't exist
     public bool right = false;
     public bool up = false;
     public bool down = false;
 
-    public bool pellet = true;
-    public bool energizer = false;
-
-    public GameObject nodeLeft;
+    // References to node GameObjects are stored here
+    public GameObject nodeLeft; 
     public GameObject nodeRight;
     public GameObject nodeUp;
     public GameObject nodeDown;
 
-    // private BoxCollider2D boxCollider;
 
-    // Start is called before the first frame update
+    // Does node contain pellet or energizer? 
+    public bool pellet = true; // True by default
+    public bool energizer = false;
 
-    void Awake()
-    {
-        // boxCollider = GetComponent<BoxCollider2D>();
-    }
-
+    /**
+     * Start is called before the first call to Update. 
+     * This method runs once per scene.
+     * Occurs at the very start of the game, the first frame.  
+    */
     void Start()
     {
-
+        // Raycast in all four directions to check if nodes exist nearby
         RaycastHit2D[] hits;
 
-        hits = Physics2D.RaycastAll(transform.position, Vector2.up);
+        hits = Physics2D.RaycastAll(transform.position, Vector2.up); // towards north
         for (int i = 0; i < hits.Length; i++)
         {
             float distance = Mathf.Abs(hits[i].point.y - transform.position.y);
+            // Nodes are recognized through layer 9 and a distance of 1
             if ((distance <= 1) && (hits[i].collider.gameObject.layer == 9))
             {
                 up = true;
@@ -43,7 +48,7 @@ public class NodeController : MonoBehaviour
 
         }
 
-        hits = Physics2D.RaycastAll(transform.position, -Vector2.up);
+        hits = Physics2D.RaycastAll(transform.position, -Vector2.up); // towards south
         for (int i = 0; i < hits.Length; i++)
         {
             float distance = Mathf.Abs(hits[i].point.y - transform.position.y);
@@ -54,7 +59,7 @@ public class NodeController : MonoBehaviour
             }
         }
 
-        hits = Physics2D.RaycastAll(transform.position, Vector2.left);
+        hits = Physics2D.RaycastAll(transform.position, Vector2.left); // towards west
         for (int i = 0; i < hits.Length; i++)
         {
             float distance = Mathf.Abs(hits[i].point.x - transform.position.x);
@@ -65,7 +70,7 @@ public class NodeController : MonoBehaviour
             }
         }
 
-        hits = Physics2D.RaycastAll(transform.position, Vector2.right);
+        hits = Physics2D.RaycastAll(transform.position, Vector2.right); // towards east
         for (int i = 0; i < hits.Length; i++)
         {
             float distance = Mathf.Abs(hits[i].point.x - transform.position.x);
@@ -76,23 +81,29 @@ public class NodeController : MonoBehaviour
             }
         }
 
-        if (pellet)
+        if (pellet) // If pellet exists in node 
         {
+            // Check for energizer
             GameObject child = transform.GetChild(0).gameObject;
-            if (child.tag == "Energizer") // if energizer
+            if (child.tag == "Energizer") 
             {
                 energizer = true;
             }
             else
             {
-                energizer = false; // current issue: energizer is always set to true for all pellets?
+                energizer = false;
             }
         }
         
 
     }
 
-    public GameObject GetNextNode(string direction) // getter as all variables will be set to priv
+    /**
+     * Retrieves next node to move to.
+     * @param direction A string holding target direction
+     * @return A nearby node GameObject
+    */
+    public GameObject GetNextNode(string direction)
     {
         GameObject nextNode = null;
 

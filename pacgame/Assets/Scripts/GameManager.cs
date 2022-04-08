@@ -4,26 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/**
+ * GameManager class oversees game state
+*/
 public class GameManager : MonoBehaviour
 {
     private float startTime;
     public float endTime;
-    public int pelletScore = 1;
-    public int energizerScore = 10;
-    public int currentScore; // total score would be 269 + 40 (4 energizers)
-    public int ghostTotal = 4;
-    // private int lives = 3;
-    // private GameObject[] pellets;
-    public int pelletCount;
-    // private GameObject[] energizers;
-    public int energizerCount;
+    public int pelletScore = 1; // Score for one pellet
+    public int energizerScore = 10; // Score for one energizer 
+    public int currentScore; // Total score would be 269 + 40 (4 energizers)
+    public int ghostTotal = 4; 
+    public int pelletCount; // Variable to keep track of pellet count in game
+    public int energizerCount; // Variable to keep track of energizer count
 
-    // public int collectRate = 0; // collection rate per 10 sec
-    // private int secRate = 10;
-
-    public GameObject ghosts; // given in inspector
-    public GameObject player;
-
+    // Collection of game states 
     public enum GameStates
     {
         win,
@@ -32,8 +27,14 @@ public class GameManager : MonoBehaviour
         inGame
     }
 
+    // Current game state 
     public GameStates state;
 
+    /** 
+     * Awake is the first method called when a Scene is loaded.
+     * This method runs once per scene, and lasts until a Scene is unloaded. 
+     * For initializing variables or states before the game starts.
+    */
     void Awake() 
     {
         state = GameStates.respawn;
@@ -42,42 +43,41 @@ public class GameManager : MonoBehaviour
         energizerCount = GetEnergizerCount();
     }
 
+    /**
+     * Start is called before the first call to Update. 
+     * This method runs once per scene.
+     * Occurs at the very start of the game, the first frame.  
+    */
     void Start()
     {
-        // start timer?
+        // Start timer
         state = GameStates.inGame;
         startTime = Time.time;
     }
 
-    // Update is called once per frame
+    /** 
+     * Update is called once per frame.
+     * Continually updates end time, score, pellet/energizer count, and game state.
+    */
     void Update()
     {
         endTime = Time.time - startTime;
-        // CheckPlayerCaught();
         currentScore = UpdateScore();
 
         pelletCount = GetPelletCount();
         energizerCount = GetEnergizerCount();
         
+        // Win if pellet and energizer counts are both 0
         if (pelletCount == 0 && energizerCount == 0)
         {
             state = GameStates.win;
         }
-
-        // if (state == GameStates.inGame)
-        // {
-            // start timer
-        // }
-
-        /*if (state == GameStates.inGame) {
-            endTime = t;
-            if (endTime - startTime >= secRate) { // after 10 seconds interval passed
-                // calculate pellet collection rate         
-            }
-        }*/
-
     }
-
+    
+    /**
+     * Retrieves pellet count.
+     * @return The amount of pellets currently in game. 
+    */
     public int GetPelletCount()
     {
         GameObject[] pellets = GameObject.FindGameObjectsWithTag("Pellet");
@@ -85,6 +85,11 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
+
+    /**
+     * Retrieves energizer count.
+     * @return The amount of energizers currently in game. 
+    */
     public int GetEnergizerCount()
     {
         GameObject[] energizers = GameObject.FindGameObjectsWithTag("Energizer");
@@ -92,6 +97,10 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
+    /**
+     * Updates score.
+     * @return The current score. 
+    */
     public int UpdateScore()
     {
         int score = currentScore;
@@ -106,29 +115,4 @@ public class GameManager : MonoBehaviour
         }
         return score;
     }
-
-    /*public void CheckPlayerCaught()
-    {
-
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject ghost = ghosts.transform.GetChild(i).gameObject;
-            if (ghost.layer == 7)
-            {
-                if (ghost.GetComponent<EnemyController>().playerCaught)
-                {
-                    state = GameStates.gameOver;
-                }
-            }
-        }
-    }*/
-
-
-    public void ResetScene()
-    {
-        // SceneManager.LoadScene("Game");
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
-    }
-
 }

@@ -3,21 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// if changing enemy types, probably cna instantiate them as prefabs. 
-// if changing speed, can do 8r + 2b + 3p + 5o or something idk  
+/**
+ * EnemyController class used for "Game" Scene.
+ * Controls for enemy/ghost movement patterns. 
+*/
 public class EnemyController : MonoBehaviour
 {
-    // red = -1.6, -4
-    // blue = 1.69, -4
-    // orange = -1.6, -2
-    // pink = 1.69, -2
-
-    /*string[] modes = {"chase", "scatter", "scared", "win"}; // win state = ghost on same tile as pacman, level controller steps in
-    int current_mode = 1;
-
-    public string nextDirection;
-    public string destination;*/
-
+    // Group of positions for ghost starting nodes
     public enum GhostNodePositions
     {
         respawning,
@@ -27,9 +19,9 @@ public class EnemyController : MonoBehaviour
         startNode,
         moveToPath
     }
-
     public GhostNodePositions ghostNodePositions;
 
+    // Grouping of ghost colors
     public enum GhostColor
     {
         red,
@@ -37,95 +29,114 @@ public class EnemyController : MonoBehaviour
         pink,
         orange
     }
-
     public GhostColor ghostColor;
 
-    // has to be public 
+    // Ghost Starting Nodes, obtained through Hierarchy 
     public GameObject ghostNodeLeft;
     public GameObject ghostNodeRight;
     public GameObject ghostNodeCenter;
     public GameObject ghostNodeStart;
 
-    // can be made private 
-    public GameObject startingNode;
-    public bool leaveHome = false;
+    public GameObject startingNode; // The ghost's chosen starting node, set in Awake
+    public bool leaveHome = false; // Bool set to true only when ghost is leaving starting nodes/spawn area
 
-    public GameObject player;
-    private MovementController movementController;
+    public GameObject player; // Reference to player GameObject in Hierarchy
+    private MovementController movementController; // MovementController class of ghost GameObject
 
-    public bool playerCaught;
-    public GameObject gameManagerObj;
-    public GameManager gameManager;
+    public bool playerCaught; // True if player is caught by ghost
+    public GameObject gameManagerObj; // GameManager GameObject object
+    public GameManager gameManager; // GameManager class
 
+
+    /** 
+     * Awake is the first method called when a Scene is loaded.
+     * This method runs once per scene, and lasts until a Scene is unloaded. 
+     * For initializing variables or states before the game starts.
+    */
     void Awake() 
     {
-        gameManager = gameManagerObj.GetComponent<GameManager>();
-        player = GameObject.FindGameObjectWithTag("Player"); // change this to the one in level controller
-        movementController = gameObject.GetComponent<MovementController>();
+        // Obtain GameManager class from its respective GameObject
+        gameManager = gameManagerObj.GetComponent<GameManager>(); 
+        // Find the player's GameObject in the hierarchy
+        player = GameObject.FindGameObjectWithTag("Player"); 
+        // MovementController class attached to ghost GameObject
+        movementController = gameObject.GetComponent<MovementController>(); 
         movementController.isGhost = true;
 
+        // Red ghost starts at start node of the spawning area
         if (ghostColor == GhostColor.red) 
         {
+            // set spawn position to startNode
             ghostNodePositions = GhostNodePositions.startNode;
-            startingNode = ghostNodeStart;
+            startingNode = ghostNodeStart; 
         }
 
+        // Blue ghost starts at left node of the spawning area
         else if (ghostColor == GhostColor.blue) 
         {
-            ghostNodePositions = GhostNodePositions.leftNode;
+            // set spawn position to leftNode
+            ghostNodePositions = GhostNodePositions.leftNode; 
             startingNode = ghostNodeLeft;
         }
 
+        // Pink ghost starts at center node of the spawning area
         else if (ghostColor == GhostColor.pink) 
         {
+            // set spawn position to centerNode
             ghostNodePositions = GhostNodePositions.centerNode;
             startingNode = ghostNodeCenter;
         }
 
+        // Orange ghost starts at right node of the spawning area
         else if (ghostColor == GhostColor.orange) 
         {
+            // set spawn position to rightNode
             ghostNodePositions = GhostNodePositions.rightNode;
             startingNode = ghostNodeRight;
         }
 
     }
 
-    // Start is called before the first frame update
+    /**
+     * Start is called before the first call to Update. 
+     * This method runs once per scene.
+     * Occurs at the very start of the game, the first frame.  
+    */
     void Start()
     {
-        Debug.Log("Enemy Controller Running");
+        // Set nextNode of MovementController class to one of the spawn locations above
         movementController.nextNode = startingNode;
-        leaveHome = true; // maybe control this from level controller later, or ask if ui is at respwan state
-        // movementController.nextDirection = "right";
+        leaveHome = true;
         playerCaught = false;
     }
 
-    // Update is called once per frame
+    /** 
+     * Update is called once per frame. Continually checks and updates the ghost's next direction.
+    */
     void Update()
     {
-        /*if (transform.position == player.transform.position)
-        {
-            playerCaught = true; 
-            gameManager.state = GameManager.GameStates.gameOver;
-        }*/
-
-        /*if (movementController.nextNode == player.GetComponent<PlayerController>().GetPlayerNextNode())
-        {
-            current_mode = 3; // win, trigger UI
-        }*/
+        // If ghost has exit starting/spawn area.
         if (ghostNodePositions == GhostNodePositions.moveToPath)
         {
+            // RED GHOST MOVEMENT
             if (ghostColor == GhostColor.red) 
             {
-                Vector2 target = player.transform.position;
+                // Player position is target position
+                Vector2 target = player.transform.position; 
+                // The best direction to reach target thus far
                 string nextDirection = GetClosestDirection(target);
-                movementController.SetDirection(nextDirection);
+                // Set direction
+                movementController.SetDirection(nextDirection); 
             }
             
+            // BLUE GHOST MOVEMENT
             else if (ghostColor == GhostColor.blue) 
             {
-                string targetDirection = player.GetComponent<MovementController>().currDirection;
-                Vector2 targetPosition = player.transform.position;   
+                // Player's current direction
+                string targetDirection = player.GetComponent<MovementController>().currDirection; 
+                // Player's current position, used to calculate target position
+                Vector2 targetPosition = player.transform.position; 
+
                 if (targetDirection == "left")
                 {
                     targetPosition.x -= 2;
@@ -146,15 +157,18 @@ public class EnemyController : MonoBehaviour
                     targetPosition.y -= 2;
                 }
 
-                GameObject redGhost = GameObject.FindGameObjectWithTag("RedGhost");
+                // Find red ghost GameObject in Hierarchy
+                GameObject redGhost = GameObject.FindGameObjectWithTag("RedGhost"); 
                 float xDistance = targetPosition.x - redGhost.transform.position.x;
                 float yDistance = targetPosition.y - redGhost.transform.position.y;
 
-                Vector2 blueTarget = new Vector2(targetPosition.x + xDistance, targetPosition.y + yDistance);
+                // Finalized target position for blue ghost
+                Vector2 blueTarget = new Vector2(targetPosition.x + xDistance, targetPosition.y + yDistance); 
                 string nextDirection = GetClosestDirection(blueTarget);
                 movementController.SetDirection(nextDirection);
             }
 
+            // PINK GHOST MOVEMENT
             else if (ghostColor == GhostColor.pink) 
             {
                 string targetDirection = player.GetComponent<MovementController>().currDirection;
@@ -184,11 +198,16 @@ public class EnemyController : MonoBehaviour
                 movementController.SetDirection(nextDirection);
             }
 
+            // ORANGE GHOST MOVEMENT
             else if (ghostColor == GhostColor.orange)
-            {
+            {   
+                // Find distance between player and self (ghost) in the current frame 
                 float distance = Math.Abs(Vector2.Distance(player.transform.position, transform.position));
+
+                // If distance is smaller than 8 units
                 if (distance < 8)
                 {
+                    // Orange ghost behaves like red ghost
                     Vector2 target = player.transform.position;
                     string nextDirection = GetClosestDirection(target);
                     movementController.SetDirection(nextDirection);
@@ -196,6 +215,7 @@ public class EnemyController : MonoBehaviour
 
                 else
                 {
+                    // Target position is set to that of a node outside of the map
                     GameObject target = GameObject.FindGameObjectWithTag("OrangeScatter");
                     string nextDirection = GetClosestDirection(target.transform.position);
                     movementController.SetDirection(nextDirection);
@@ -203,57 +223,73 @@ public class EnemyController : MonoBehaviour
             }
         }   
 
+        // If ghosts are in respawning mode
         else if (ghostNodePositions == GhostNodePositions.respawning)
         {
-            Debug.Log("RESPWAN");
+            Debug.Log("RESPAWN");
         }
 
+        // If ghosts are still in starting/spawn area
         else {
+            // If ghost can leave spawn area
             if (leaveHome) 
             {
+                // If ghost is currently at the left side of the spawn area, move to center
                 if (ghostNodePositions ==  GhostNodePositions.leftNode)
                 {
                     ghostNodePositions = GhostNodePositions.centerNode;
                     movementController.nextNode = ghostNodeCenter;
                 }
 
+                // If ghost is currently at the right side of the spawn area, move to center
                 if (ghostNodePositions == GhostNodePositions.rightNode)
                 {
                     ghostNodePositions = GhostNodePositions.centerNode;
                     movementController.nextNode = ghostNodeCenter;
                 }
 
+                // If ghost is currently at the center node, move to 'start' node located outside of spawn area
                 if (ghostNodePositions == GhostNodePositions.centerNode)
                 {
                     ghostNodePositions = GhostNodePositions.startNode;
                     movementController.nextNode = ghostNodeStart;
                 }
 
+                // If ghost is currently at the start node, move to maze path. 
                 if (ghostNodePositions == GhostNodePositions.startNode)
                 {
                     ghostNodePositions = GhostNodePositions.moveToPath;
-                    // movementController.nextDirection = "right"; // temp, change to GetPlayerDirection? 
                 }
             }
         }
     }
 
+    /**
+     * Retrieves direction that is closest to a given target.
+     * @param targetPosition 2D Vector holding target position 
+     * @return A string detailing the next direction to move to 
+    */
     public string GetClosestDirection(Vector2 targetPosition) 
     {
+        // Variables to keep track of shortest distance and direction
         float shortestDistance = 0;
         string nextDirection = "";
         
-        // get player position
-        // Vector2 targetPosition = player.transform.position;
-        string prevDirection = movementController.currDirection; // this is so that ghosts can't reverse
+        // Get ghost's current direction, prevent ghost from reversing
+        string prevDirection = movementController.currDirection;
 
+        // NodeController class obtained from the ghost's nextNode 
         NodeController nodeController = movementController.nextNode.GetComponent<NodeController>();
 
-        if (nodeController.up && prevDirection != "down") 
+        // If there exists a node above nextNode and the previous direction is not 'down'
+        if (nodeController.up && prevDirection != "down")  
         {
-            GameObject nodeUp = nodeController.nodeUp;
-            float distance = Vector2.Distance(nodeUp.transform.position, targetPosition);
+            // Obtain node above nextNode
+            GameObject nodeUp = nodeController.nodeUp; 
+            // Calculate distance between nodeUp and target
+            float distance = Vector2.Distance(nodeUp.transform.position, targetPosition); 
 
+            // Update shortest distance and next direction if distance is the smallest thus far
             if (distance < shortestDistance || shortestDistance == 0)
             {
                 shortestDistance = distance;
@@ -261,11 +297,15 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+        // If there exists a node to the left of nextNode and the previous direction is not 'right'
         if (nodeController.left && prevDirection != "right") 
         {
+            // Obtain node to the left
             GameObject nodeLeft = nodeController.nodeLeft;
+            // Calculate distance between target and nodeLeft
             float distance = Vector2.Distance(nodeLeft.transform.position, targetPosition);
 
+            // Check and update shortest distance
             if (distance < shortestDistance || shortestDistance == 0)
             {
                 shortestDistance = distance;
@@ -273,6 +313,7 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+        // If there exists a node below nextNode and the previous direction is not 'up'
         if (nodeController.down && prevDirection != "up") 
         {
             GameObject nodeDown = nodeController.nodeDown;
@@ -285,6 +326,7 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+        // If there exists a node to the right of nextNode and the previous direction is not 'left'
         if (nodeController.right && prevDirection != "left") 
         {
             GameObject nodeRight = nodeController.nodeRight;
@@ -297,14 +339,22 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+        // Return shortest direction in string format
         return nextDirection;
     }
 
+    /**
+     * Called when an object collides with ghost
+     * @param other Collider object attached to GameObject that collided with ghost
+    */
     void OnTriggerEnter2D(Collider2D other)
     {
+        // If other GameObject is player
         if (other.tag == "Player")
         {
+            // Player is caught
             playerCaught = true; 
+            // Game state is game over
             gameManager.state = GameManager.GameStates.gameOver;
         }
     }

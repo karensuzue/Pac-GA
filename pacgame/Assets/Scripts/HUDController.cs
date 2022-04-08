@@ -4,79 +4,77 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/**
+ * The HUDController class is in charge of the game's HUD.
+ * Additionally, it generates game-over or win pop-ups at the end of each run.
+*/
 public class HUDController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public Text scoreText;
-    public Text timerText;
+    public Text scoreText; // The Text object containing the score in string format
+    public Text timerText; // The Text object containing the play time in string format
 
-    public GameObject endPopup;
+    public GameObject endPopup; // The GameObject object that houses the end game pop-up
 
-    public int currentScore;
-    // public float startTime;
-    // public float endTime;
+    public int currentScore; // Integer variable holding the current score
 
-    public GameObject gameManagerObj;
-    public GameManager gameManager;
+    public GameObject gameManagerObj; // Reference to the GameManager GameObject object in Hierarchy
+    public GameManager gameManager; // GameManager class obtained from the GameManager GameObject object
 
-    public GameManager.GameStates state;
+    public GameManager.GameStates state; // The current state of the game (win, lose, etc.)
 
+    /** 
+     * Awake is called at the very start when a Scene is loaded, before all other methods.
+     * This method runs once per scene, and lasts until a Scene is unloaded. 
+     * For initializing variables or states before the game starts.
+    */
     void Awake()
     {
-        gameManager = gameManagerObj.GetComponent<GameManager>();
-        currentScore = gameManager.currentScore;
-        scoreText.text = "Score: " + currentScore.ToString();
-        state = gameManager.state;
-        endPopup.SetActive(false);
+        gameManager = gameManagerObj.GetComponent<GameManager>(); // Obtain GameManager class from GameManager object
+        currentScore = gameManager.currentScore; // Obtain current score from GameManager class
+        scoreText.text = "Score: " + currentScore.ToString(); // Set text for score in HUD
+        state = gameManager.state; // Obtain current game state from GameManager class
+        endPopup.SetActive(false); // Pop-up inactive
     }
 
-    void Start()
-    {
-        // startTime = Time.time;
-    }
-
-
-    // Update is called once per frame
+    /** 
+     * Update is called once per frame. Constantly reupdates information for HUD.
+    */
     void Update()
     {
-        currentScore = gameManager.currentScore;
-        scoreText.text = "Score: " + currentScore.ToString();
-
-        // float t = Time.time - startTime;
+        currentScore = gameManager.currentScore; // Obtain current score from GameManager class
+        scoreText.text = "Score: " + currentScore.ToString(); // Set text for score in HUD
 
         state = gameManager.state;
-        if (state == GameManager.GameStates.win)
+        if (state == GameManager.GameStates.win) // If current game state is 'win' (player won)
         {
-            endPopup.SetActive(true);
-            endPopup.transform.GetChild(0).gameObject.SetActive(true);
-            endPopup.transform.GetChild(1).gameObject.SetActive(false);
+            endPopup.SetActive(true); // Pop-up active, appears on screen
+            endPopup.transform.GetChild(0).gameObject.SetActive(true); // 'Win' Text active
+            endPopup.transform.GetChild(1).gameObject.SetActive(false); // 'Loss' Text inactive
         }
         
-        else if (state == GameManager.GameStates.gameOver)
+        else if (state == GameManager.GameStates.gameOver) // If current game state is 'gameOver' (player lost)
         {
-            endPopup.SetActive(true);
-            endPopup.transform.GetChild(0).gameObject.SetActive(false);
-            endPopup.transform.GetChild(1).gameObject.SetActive(true);
+            endPopup.SetActive(true); // Pop-up active
+            endPopup.transform.GetChild(0).gameObject.SetActive(false); // 'Win' Text inactive
+            endPopup.transform.GetChild(1).gameObject.SetActive(true); // 'Loss' text active
         }
-        else 
+        else // If game is still ongoing, has not ended 
         {
-            // endTime = t;
-            timerText.text = "Time: " + gameManager.endTime.ToString();
+            timerText.text = "Time: " + gameManager.endTime.ToString(); // Update text for time. 
         }
     }
 
+    /**
+     * Method for reloading scenes. Used for 'Play Again' button in pop-up.
+     * Uncomment depending on scene/game mode chosen.
+     * Two game modes are available: "Game" and "Game GA".
+    */
     public void RestartButton()
     {
-        // For scene "Game":
-        //SceneManager.LoadScene("Game");
+        // For scene "Game"
+        SceneManager.LoadScene("Game");
 
         // For scene "Game GA"
-        SceneManager.LoadScene("Game GA");
-
-        // For scene "Game GA Increased Mutation"
-        // SceneManager.LoadScene("Game GA Increased Mutation");
-
-        // For scene "Game GA Seeding"
-        // SceneManager.LoadScene("Game GA Seeding");
+        // SceneManager.LoadScene("Game GA");
     }
 }

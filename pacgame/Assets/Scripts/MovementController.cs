@@ -2,75 +2,79 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * MovementController class used for simulating character movement.
+ * Keeps track of next directions. 
+*/
 public class MovementController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public GameObject nextNode; // given in inspector
-    // private GameObject teleportR;
-    // private GameObject teleportL;
-    public float speed; // switch to private later
+    public GameObject nextNode; // Initialize through Inspector
+    public float speed; // Character speed
 
-    public string currDirection = ""; // switch to private after done with debuggin
-    public string nextDirection = "";
+    public string currDirection = ""; // Current direction
+    public string nextDirection = ""; // Next direction
 
-    public bool isGhost = false;
+    public bool isGhost = false; // true if character is ghost/enemy type
 
-    private NodeController nodeController;
+    // NodeController class attached to node GameObject instance. 
+    private NodeController nodeController; 
 
-    void Start()
+    /** 
+     * FixedUpdate is called at a fixed interval independent of frame rate. 
+     * Handles movement
+    */
+    void FixedUpdate()
     {
-        // teleportL = GameObject.FindGameObjectWithTag("TeleportL");
-        // teleportR = GameObject.FindGameObjectWithTag("TeleportR");
-    }
-
-    // Update is called once per frame
-    void FixedUpdate() // handles the movement
-    {
+        // Transform posiiton of character to simulate movement 
         transform.position = Vector2.MoveTowards(transform.position, nextNode.transform.position,
          speed * Time.deltaTime);
     }
 
+    /** 
+     * Update is called once per frame.
+     * Handles changes in direction.
+    */
     void Update()
     {
+        // Reference NodeController class of next node to move to
         nodeController = nextNode.GetComponent<NodeController>();
 
+        // If next node has pellet and current character is player
         if (nodeController.pellet && gameObject.tag == "Player")
         {
-            nodeController.pellet = false;
+            // disable pellet
+            nodeController.pellet = false; 
             GameObject child = nextNode.transform.GetChild(0).gameObject;
             child.SetActive(false);
 
+            // if energizer, disable energizer
             if (nodeController.energizer)
             {
                 nodeController.energizer = false;
             }
         }
 
+        // Makes sure that character is directly on top of node 
+        // Only when character is right on the middle of node should we change direction
         if (transform.position.x == nextNode.transform.position.x && transform.position.y == nextNode.transform.position.y)
         {
-            // making sure that pacman is right on the node and not somewhere else (to prevent it from getting stuck)
-            // only when it is right on the middle of the node shoudl we change the direction
+            // Get node for next direction
             GameObject tempNode = nodeController.GetNextNode(nextDirection);
-            if (tempNode != null)
-            {
-                nextNode = tempNode;
-                currDirection = nextDirection;
-            }            
 
-            /*else if (tempNode == null && currDirection != "")
+            // If node exists for such direction
+            if (tempNode != null) 
             {
-                if (currDirection != "")
-                {
-                    tempNode = nodeController.GetNextNode(currDirection);
-                    nextNode = tempNode;
-                }
-                
-            }*/
-            
+                nextNode = tempNode; // Finalize next node
+                currDirection = nextDirection; // Update current direction
+            }                      
            
         }
     }
 
+    /**
+     * Set next direction
+     * @param direction A string holding target direction
+    */
     public void SetDirection(string direction)
     {
         nextDirection = direction;
