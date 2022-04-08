@@ -72,9 +72,9 @@ public class HUDController : MonoBehaviour
     public void RestartButton()
     {
         // For scene "Game"
-        SceneManager.LoadScene("Game");
+        // SceneManager.LoadScene("Game");
 
         // For scene "Game GA"
-        // SceneManager.LoadScene("Game GA");
+        SceneManager.LoadScene("Game GA");
     }
 }
